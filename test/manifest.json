@@ -1,0 +1,11 @@
+{
+  "Name": "MyProject",
+  "Author": "MyName",
+  "Version": "1.0.0",
+  "Description": "One or two sentences about the mod.",
+  "UniqueID": "MyName.MyProject",
+  "UpdateKeys": [],
+  "ContentPackFor": {
+    "UniqueID": "Pathoschild.ContentPatcher"
+  }
+}

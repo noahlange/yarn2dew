@@ -1,0 +1,5 @@
+node_modules
+test/i18n/*
+test/content.json
+!.gitkeep
+y2sdv

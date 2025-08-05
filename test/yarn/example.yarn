@@ -1,0 +1,45 @@
+title: Adventure
+position: -227,-211
+start: 100,-100
+music: Cowboy_OVERWORLD
+location: AdventureGuild
+---
+<<start farmer 4 15 0>>
+<<start Marlon 4 11 2>>
+<<changeLocation AdventureGuild>>
+<<viewport 4 11>>
+<<move farmer 0 -2 0>>
+
+Marlon: You're going on an adventure!
+Whaddya say?
+-> Neat-o!
+  Marlon: Have you ever been on an adventure before?
+  -> Of course I have!
+    <<jump AdventureStart>>
+  -> I haven't—do you have any tips or tricks?
+    <<jump AdventureTips>>
+-> I don't want to go on an adventure!
+  <<jump AdventureFail>>
+===
+
+title: AdventureTips
+position: 59,-233
+---
+Marlon regales you with tales of adventure and derring-do, bereft of any educational content whatsoever.
+<<jump AdventureStart>>
+===
+
+title: AdventureStart
+position: 63,12
+---
+Marlon: Then get out there, adventurer! $h
+<<end>>
+===
+
+title: AdventureFail
+position: -215,31
+---
+Marlon: *Hmph.* $a
+Marlon: We'll see how your grandpa feels about that!
+<<end>>
+===

@@ -1,0 +1,17 @@
+{
+  "name": "yarn2dew",
+  "version": "0.1.0",
+  "description": "Compiles Yarn dialogue to Stardew Valley event format.",
+  "devDependencies": {
+    "@types/bun": "^1.2.19",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@mnbroatch/bondage": "^4.2.4",
+    "ts-pattern": "^5.8.0"
+  },
+  "scripts": {
+    "dist": "bun build ./src/task.ts --outfile y2sdv --compile",
+    "check": "tsc --noEmit"
+  }
+}

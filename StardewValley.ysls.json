@@ -1,0 +1,235 @@
+{
+  "Commands": [
+    {
+      "YarnName": "start",
+      "Language": "text",
+      "Documentation": "Sets the start position and direction for a character.",
+      "Parameters": [
+        { "Name": "Character", "Type": "string" },
+        { "Name": "x", "Type": "number" },
+        { "Name": "y", "Type": "number" },
+        { "Name": "direction", "Type": "number" }
+      ]
+    },
+    {
+      "YarnName": "when",
+      "Language": "text",
+      "Documentation": "Adds a condition to the event key string.",
+      "Parameters": [
+        { "Name": "Condition", "Type": "string" },
+        { "Name": "Parameters", "Type": "any", "IsParamsArray": true }
+      ]
+    },
+    {
+      "YarnName": "pause",
+      "Language": "text",
+      "Documentation": "Pause for `duration` ms before continuing.",
+      "Signature": "Pause(int duration)",
+      "Parameters": [
+        {
+          "Name": "duration",
+          "Type": "number",
+          "Documentation": "Number of ms to pause before continuing."
+        }
+      ]
+    },
+    {
+      "YarnName": "macro",
+      "Parameters": [
+        { "Name": "title", "Type": "string" },
+        { "Name": "count", "Type": "number", "DefaultValue": "1" }
+      ]
+    },
+    {
+      "YarnName": "mail",
+      "Parameters": [{ "Name": "name", "Type": "string" }]
+    },
+    {
+      "YarnName": "showFrame",
+      "Parameters": [
+        { "Name": "character", "Type": "string" },
+        { "Name": "frame", "Type": "number" }
+      ]
+    },
+    {
+      "YarnName": "viewport",
+      "Parameters": [
+        { "Name": "x", "Type": "number" },
+        { "Name": "y", "Type": "number" }
+      ]
+    },
+    {
+      "YarnName": "globalFade",
+      "Language": "text",
+      "Parameters": []
+    },
+    {
+      "YarnName": "end",
+      "Language": "text",
+      "Parameters": [
+        {
+          "Name": "keyword",
+          "Type": "string",
+          "DefaultValue": "null",
+          "Documentation": "one of (bed, beginGame, warpOut, invisible, newDay, position <x> <y>)"
+        }
+      ]
+    },
+    {
+      "YarnName": "cutscene",
+      "Language": "text",
+      "Parameters": [{ "Name": "Cutscene ID", "Type": "string" }]
+    },
+    {
+      "YarnName": "fork",
+      "Language": "text",
+      "Parameters": [{ "Name": "Fork name", "Type": "string" }]
+    },
+    {
+      "YarnName": "switchEvent",
+      "Language": "text",
+      "Parameters": [{ "Name": "Event name", "Type": "string" }]
+    },
+    {
+      "YarnName": "emote",
+      "Language": "text",
+      "Parameters": [
+        { "Name": "character", "Type": "string" },
+        { "Name": "emote", "Type": "number" }
+      ]
+    },
+    {
+      "YarnName": "changeLocation",
+      "DefinitionName": "ChangeLocation",
+      "Language": "text",
+      "Parameters": [{ "Name": "Location", "Type": "string" }]
+    },
+    {
+      "YarnName": "playSound",
+      "Language": "text",
+      "Parameters": [{ "Name": "sound", "Type": "string" }]
+    },
+    {
+      "YarnName": "loopSound",
+      "Language": "text",
+      "Parameters": [
+        { "Name": "sound", "Type": "string" },
+        { "Name": "duration", "Type": "number" }
+      ]
+    },
+    {
+      "YarnName": "loopSoundStop",
+      "Language": "text",
+      "Parameters": [{ "Name": "sound", "Type": "string" }]
+    },
+    {
+      "YarnName": "speak",
+      "Language": "text",
+      "Parameters": [
+        { "Name": "speaker", "Type": "string" },
+        {
+          "Name": "Value",
+          "Type": "string",
+          "Documentation": "Either a text literal or i18n string."
+        }
+      ]
+    },
+    {
+      "YarnName": "stopAnimation",
+      "Parameters": [{ "Name": "character", "Type": "string" }]
+    },
+    {
+      "YarnName": "textAboveHead",
+      "Parameters": [
+        { "Name": "character", "Type": "string" },
+        { "Name": "text", "Type": "string" }
+      ]
+    },
+    {
+      "YarnName": "shake",
+      "Parameters": [
+        { "Name": "character", "Type": "string" },
+        { "Name": "duration", "Type": "number" }
+      ]
+    },
+    {
+      "YarnName": "animate",
+      "Language": "text",
+      "Parameters": [
+        { "Name": "character", "Type": "string" },
+        { "Name": "flipX", "Type": "bool" },
+        { "Name": "loop", "Type": "bool" },
+        { "Name": "duration", "Type": "number" },
+        { "Name": "frames", "Type": "number", "IsParamsArray": true }
+      ]
+    },
+    {
+      "YarnName": "warp",
+      "Parameters": [
+        { "Name": "character", "Type": "string" },
+        { "Name": "x", "Type": "number" },
+        { "Name": "y", "Type": "number" },
+        { "Name": "continue", "Type": "bool", "DefaultValue": "false" }
+      ]
+    },
+    {
+      "YarnName": "move",
+      "Parameters": [
+        { "Name": "character", "Type": "string" },
+        { "Name": "x", "Type": "number" },
+        { "Name": "y", "Type": "number" },
+        { "Name": "d", "Type": "number" }
+      ]
+    },
+    {
+      "YarnName": "positionOffset",
+      "Parameters": [
+        { "Name": "character", "Type": "string" },
+        { "Name": "x", "Type": "number" },
+        { "Name": "y", "Type": "number" }
+      ]
+    },
+    {
+      "YarnName": "faceDirection",
+      "Parameters": [
+        { "Name": "character", "Type": "string" },
+        { "Name": "direction", "Type": "number" }
+      ]
+    },
+    {
+      "YarnName": "screenFlash",
+      "Parameters": [{ "Name": "count", "Type": "number" }]
+    }
+  ],
+  "Functions": [
+    {
+      "YarnName": "PLAYER_VISITED_LOCATION",
+      "DefinitionName": "PlayerVisitedLocation",
+      "ReturnType": "bool",
+      "Language": "text",
+      "Parameters": [{ "Name": "Location", "Type": "string" }]
+    },
+    {
+      "YarnName": "PLAYER_FRIENDSHIP_POINTS",
+      "DefinitionName": "PlayerFriendshipPoints",
+      "ReturnType": "bool",
+      "Language": "text",
+      "Parameters": [
+        { "Name": "player", "Type": "string" },
+        { "Name": "npc", "Type": "string" },
+        { "Name": "minPoints", "Type": "number" },
+        { "Name": "maxPoints", "Type": "number", "DefaultValue": "null" }
+      ]
+    },
+    {
+      "YarnName": "RANDOM",
+      "DefinitionName": "Random",
+      "ReturnType": "bool",
+      "Language": "text",
+      "Parameters": [
+        { "Name": "chance", "Type": "number", "Documentation": "decimal" },
+        { "Name": "addDailyLuck", "Type": "bool", "DefaultValue": "false" }
+      ]
+    }
+  ]
+}
