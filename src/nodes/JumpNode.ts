@@ -11,6 +11,8 @@ export class JumpNode extends Node {
     };
   }
 
+  public readonly type = 'JumpNode';
+
   public compile($: Compiler) {
     $.writeLine(`switchEvent ${$.namespace}.${this.destination}`);
   }

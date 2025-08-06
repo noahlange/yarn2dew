@@ -7,6 +7,7 @@ export class MessageNode implements TextNode {
     $.writeLine(`message {{${i18n}}}`);
   }
 
+  public readonly type = 'MessageNode';
   public i18n: string | null = null;
 
   constructor(public text: string) {

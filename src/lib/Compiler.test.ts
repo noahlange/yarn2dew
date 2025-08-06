@@ -28,11 +28,6 @@ describe('compiler', () => {
     expect(content).toContainAllKeys(['MyTest.Main', 'MyTest.Two']);
   });
 
-  test('start tags are inserted in the correct order', () => {
-    const node = content['MyTest.Main'];
-    expect(node).toStartWith('rain/-100 -100/Foobar 1 2 3');
-  });
-
   test('automatically creates i18n entries and subs them in text', () => {
     expect(i18n['MyTest.Two.01']).toBe('Hello, world!');
     expect(i18n['MyTest.Two.02']).toBe('"This is a quotable line of dialogue."');

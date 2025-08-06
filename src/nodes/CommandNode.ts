@@ -37,6 +37,8 @@ export class CommandNode extends Node {
     };
   }
 
+  public readonly type = 'CommandNode';
+
   public compile($: Compiler) {
     $.writeLine(`${this.name.trim()} ${this.args.join(' ')}`.trim());
   }

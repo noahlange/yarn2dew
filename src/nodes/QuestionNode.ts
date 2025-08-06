@@ -32,10 +32,15 @@ export class QuestionNode implements TextNode {
     };
   }
 
+  public readonly type = 'QuestionNode';
+
   public compile($: Compiler) {
     const i18n = (this.i18n ??= $.getI18nKey(this.text));
 
-    for (const r of this.responses) r.precompile($);
+    for (const r of this.responses) {
+      // needed in order to get i18n keys
+      r.precompile($);
+    }
 
     $.write(`/quickQuestion {{${i18n}}}#`);
     $.write(

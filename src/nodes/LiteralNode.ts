@@ -25,7 +25,7 @@ export class LiteralNode extends Node {
       });
   }
 
-  readonly type = 'LiteralNode';
+  public readonly type = 'LiteralNode';
 
   public compile($: Compiler) {
     $.write(this.value);

@@ -18,8 +18,12 @@ export class ResponseNode {
 
   public i18n: string | null = null;
   public id: string | null = null;
+  public readonly type = 'ResponseNode';
 
-  constructor(public text: string, public content: AnyNode[]) {
+  constructor(
+    public text: string,
+    public content: AnyNode[]
+  ) {
     this.content.unshift(new CommandNode('pause', ['1']));
     let trimmed = text.trim();
     if (trimmed.startsWith('i18n:')) {

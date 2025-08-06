@@ -8,8 +8,12 @@ export class SpeakNode implements TextNode {
   }
 
   public i18n: string | null = null;
+  public readonly type = 'SpeakNode';
 
-  constructor(public text: string, public speaker: string) {
+  public constructor(
+    public text: string,
+    public speaker: string
+  ) {
     let trimmed = text.trim();
     if (trimmed.startsWith('i18n:')) {
       this.i18n = trimmed;

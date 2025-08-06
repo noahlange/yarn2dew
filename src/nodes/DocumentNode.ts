@@ -3,9 +3,11 @@ import { Node } from './Node';
 import { RootNode } from './RootNode';
 
 export class DocumentNode extends Node {
-  compile($: Compiler) {
+  public readonly type = 'DocumentNode';
+
+  public compile($: Compiler) {
     this.roots.forEach((node, i) => {
-      if (i > 0) node.meta.entry = false;
+      node.meta.entry = i === 0;
       node.compile($);
     });
   }

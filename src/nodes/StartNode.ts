@@ -2,6 +2,8 @@ import { Compiler } from '../lib';
 import { Node } from './Node';
 
 export class StartNode extends Node {
+  public readonly type = 'StartNode';
+
   public compile($: Compiler) {
     $.prepend(`${this.name} ${this.x} ${this.y} ${this.direction} `);
   }

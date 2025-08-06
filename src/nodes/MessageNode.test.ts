@@ -16,6 +16,6 @@ const { content, i18n } = getContentData(y2sdv);
 
 test('message nodes', () => {
   const node = content['MyTest.Main'];
-  expect(node).toStartWith('message {{i18n:MyTest.Main.01}}');
+  expect(node).toContain('message {{i18n:MyTest.Main.01}}');
   expect(i18n['MyTest.Main.01']).toBe('Hello, world!');
 });

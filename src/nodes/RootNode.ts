@@ -4,6 +4,8 @@ import { Compiler, ScopeType } from '../lib';
 import { type AnyNode, CommandNode } from '.';
 
 export class RootNode extends Node {
+  public readonly type = 'RootNode';
+
   private getStart(): string {
     if (this.meta.start) {
       return (this.meta.start.split(',') as string[]).map(v => v.trim()).join(' ');
@@ -18,7 +20,14 @@ export class RootNode extends Node {
     return 'continue';
   }
 
-  private prependPause() {
+  private addEventPrelude($: Compiler) {
+    if (this.meta.entry) {
+      $.prependLine(this.getStart()!);
+      $.prependLine(this.getMusic());
+    }
+  }
+
+  private addEventPause() {
     if (this.meta.entry === false) {
       this.children.unshift(new CommandNode('pause', ['1']));
     }
@@ -26,14 +35,11 @@ export class RootNode extends Node {
 
   public compile($: Compiler) {
     $.useScope(ScopeType.EVENT, this.meta.title, () => {
-      this.prependPause();
+      this.addEventPause();
       for (const node of this.children) {
         node.compile($);
       }
-      if (this.meta.entry) {
-        $.prependLine(this.getStart()!);
-        $.prependLine(this.getMusic());
-      }
+      this.addEventPrelude($);
     });
   }
 
