@@ -94,9 +94,15 @@ title: AdventureFail
 position: -215,31
 ---
 Marlon: *Hmph.* $a
-Marlon: We'll see how Grandpa feels about that!w
+Marlon: We'll see what Grandpa has to say about this!
 <<end>>
 ===
+```
+
+```sh
+bun run dist    # creates an executable
+./yarn2dew      # recursively watches for `yarn` file changes,
+                # then generates ./i18n/default.json and ./content.json
 ```
 
 ![Done with Bun](./dun-with-bun.png)¹

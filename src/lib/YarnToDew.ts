@@ -13,8 +13,8 @@ export class YarnToDew {
     yield* Object.entries(this.builder.emit());
   }
 
-  public patch(file: string, content: string): string {
-    return this.patcher.patch(file, JSON.parse(content));
+  public patch(file: string, content: object): string {
+    return this.patcher.patch(file, content);
   }
 
   constructor(name: string, data: string) {

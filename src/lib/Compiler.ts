@@ -34,7 +34,7 @@ export class Compiler {
   }
 
   private log(...text: unknown[]) {
-    console.log('\t'.repeat(this.stack.length), ...text);
+    // console.log('\t'.repeat(this.stack.length), ...text);
   }
 
   public useScope(type: ScopeType.EVENT | ScopeType.NPC | ScopeType.MAP, name: string, cb: () => void) {

@@ -11,7 +11,7 @@
     "ts-pattern": "^5.8.0"
   },
   "scripts": {
-    "dist": "bun build ./src/task.ts --outfile y2sdv --compile",
+    "dist": "bun build ./src/task.ts --outfile yarn2dew --compile",
     "check": "tsc --noEmit"
   }
 }
