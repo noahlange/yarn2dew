@@ -30,8 +30,10 @@ export class RootNode extends Node {
       for (const node of this.children) {
         node.compile($);
       }
-      $.prependLine(this.getStart()!);
-      $.prependLine(this.getMusic());
+      if (this.meta.entry) {
+        $.prependLine(this.getStart()!);
+        $.prependLine(this.getMusic());
+      }
     });
   }
 
