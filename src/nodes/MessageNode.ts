@@ -4,7 +4,7 @@ import { TextNode } from './TextNode';
 export class MessageNode implements TextNode {
   public compile($: Compiler) {
     const i18n = (this.i18n ??= $.getI18nKey(this.text));
-    $.writeLine(`message {{${i18n}}}`);
+    $.writeLine(`message "{{${i18n}}}"`);
   }
 
   public readonly type = 'MessageNode';

@@ -1,8 +1,8 @@
 import { test, expect, describe } from 'bun:test';
-import { getContentData } from '../utils';
-import { YarnToDew } from '../lib';
+import { generate } from '../generate';
+import { getContentEntries } from '../utils';
 
-const y2sdv = new YarnToDew(
+const y2sdv = generate(
   'MyTest',
   `
     title: Main
@@ -13,7 +13,7 @@ Bar: {"i18n:123456"}
     ===`
 );
 
-const { content, i18n } = getContentData(y2sdv);
+const content = getContentEntries(y2sdv.content);
 const node = content['MyTest.Main'];
 
 describe('SpeakNode', () => {
@@ -26,6 +26,6 @@ describe('SpeakNode', () => {
   });
 
   test("i18'd text is quoted", () => {
-    expect(i18n['MyTest.Main.01']).toBe('"Hello, world!"');
+    expect(y2sdv.i18n['MyTest.Main.01']).toBe('"Hello, world!"');
   });
 });

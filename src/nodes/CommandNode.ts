@@ -13,7 +13,7 @@ export class CommandNode extends Node {
   public static parse(parser: Parser, node: GenericCommandNode, nodes: NodeType[]) {
     const index = nodes.indexOf(node);
     const [name, ...args] = match(node)
-      .with({ type: 'StopCommandNode' }, () => ['stop'])
+      .with({ type: 'StopCommandNode' }, () => ['end'])
       .otherwise(({ command }) => command[0].text.split(' '));
 
     return {

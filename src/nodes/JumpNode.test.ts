@@ -1,9 +1,9 @@
 import { describe, test, expect } from 'bun:test';
-import { YarnToDew } from '../lib';
-import { getContentData } from '../utils';
+import { generate } from '../generate';
+import { getContentEntries } from '../utils';
 
 describe('built-in yarn commands', () => {
-  const y2sdv = new YarnToDew(
+  const y2sdv = generate(
     'MyTest',
     `title: Main
       location: Saloon
@@ -21,7 +21,7 @@ describe('built-in yarn commands', () => {
     `
   );
 
-  const { content } = getContentData(y2sdv);
+  const content = getContentEntries(y2sdv.content);
   test('jump targets are correctly emitted', () => {
     expect(content).toContainKey('MyTest.Main');
     expect(content).toContainKey('MyTest.Two');

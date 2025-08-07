@@ -19,8 +19,8 @@ export interface Scope {
 }
 
 export class Compiler {
-  public static builderFrom(compiler: Compiler): Builder {
-    return new Builder(compiler.namespace, Object.values(compiler.frames), compiler.i18n);
+  public static builderFrom(compiler: Compiler, filename?: string): Builder {
+    return new Builder(compiler.namespace, Object.values(compiler.frames), compiler.i18n, filename);
   }
 
   private getNewScope(type: ScopeType, name: string | null = null): number {

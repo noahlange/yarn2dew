@@ -1,9 +1,9 @@
-import type { I18N } from '../types';
+import type { BuilderOutput, ContentJSON, I18N } from '../types';
 import { getContentPatch } from '../utils';
 import { ScopeType, type Scope } from './Compiler';
 
 export class Builder {
-  public emit() {
+  public emit(): BuilderOutput {
     const targets = Object.groupBy(
       Object.values(this.frames)
         .filter(f => f.type !== ScopeType.NONE)
@@ -28,8 +28,9 @@ export class Builder {
     );
 
     return {
-      'content.json': content,
-      'i18n/default.json': Object.entries(this.i18n).reduce(
+      content,
+      source: this.source,
+      i18n: Object.entries(this.i18n).reduce(
         (a, [key, value]) => ({
           ...a,
           [`${this.namespace}.${key}`]: value
@@ -70,6 +71,7 @@ export class Builder {
   public constructor(
     private namespace: string,
     private frames: Scope[],
-    private i18n: Record<string, string>
+    private i18n: Record<string, string>,
+    private source?: string
   ) {}
 }

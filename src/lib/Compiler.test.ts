@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'bun:test';
-import { YarnToDew } from './YarnToDew';
-import { getContentData } from '../utils';
+import { generate } from '../generate';
+import { getContentEntries } from '../utils';
 
-const y2sdv = new YarnToDew(
+const y2sdv = generate(
   'MyTest',
   `
     title: Main
@@ -21,11 +21,12 @@ const y2sdv = new YarnToDew(
     ===
   `
 );
+
 describe('compiler', () => {
-  const { content, i18n } = getContentData(y2sdv);
+  const { content, i18n } = y2sdv;
 
   test('can compile basic content without exploding', () => {
-    expect(content).toContainAllKeys(['MyTest.Main', 'MyTest.Two']);
+    expect(getContentEntries(content)).toContainAllKeys(['MyTest.Main', 'MyTest.Two']);
   });
 
   test('automatically creates i18n entries and subs them in text', () => {

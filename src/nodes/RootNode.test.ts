@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'bun:test';
-import { YarnToDew } from '../lib';
-import { getContentData } from '../utils';
+import { generate } from '../generate';
+import { getContentEntries } from '../utils';
 
-const y2sdv = new YarnToDew(
+const y2sdv = generate(
   'MyTest',
   `
     title: Main
@@ -23,7 +23,7 @@ const y2sdv = new YarnToDew(
 );
 
 describe('Root nodes', () => {
-  const { content } = getContentData(y2sdv);
+  const content = getContentEntries(y2sdv.content);
   test('entry nodes have initial tags are inserted in the correct order', () => {
     const node = content['MyTest.Main'];
     expect(node).toStartWith('rain/-100 -100/Foobar 1 2 3');
