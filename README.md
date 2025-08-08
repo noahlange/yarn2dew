@@ -16,6 +16,7 @@ While some parts of that feature set does require the Yarn runtime, not _all_ of
 - [x] branching dialogue trees
 - [x] ✨ automagical ✨ localization
 - [x] event conditions
+- [x] game state queries
 - [x] arbitrary commands w/ parameters
   - [x] `jump`
   - [x] `wait` (same as `pause`, just in seconds)
@@ -32,13 +33,12 @@ While some parts of that feature set does require the Yarn runtime, not _all_ of
 - some Stardew features
   - whatever the heck forks are
 
-### …but eventually?
+### …but eventually, maybe?
 
 - [ ] flow-through prompts w/ reactions
-- [ ] basic flow control: `<<if>>`, `<<else>>`, `<<elseif>>`
-  - [ ] game state queries
 - [ ] automatic `<<end>>` insert
-- [ ] shims for Yarn built-in functions
+- [ ] super-basic flow control: `<<if>>`, `<<else>>`, `<<elseif>>`
+- [ ] shims for select Yarn built-ins
   - [ ] `random`
 
 ## how do you even
@@ -99,10 +99,16 @@ Marlon: We'll see what Grandpa has to say about this!
 ===
 ```
 
+## Tooling
+
+There's a very basic implementation of a watching content patcher. It may maul existing `content.json` files, so you'll probably want to keep those in Git just in case.
+
+You can include a "source" key in the top-level node metadata to write specific events to a particular file.
+
 ```sh
 bun run dist    # creates an executable
 ./yarn2dew      # recursively watches for `yarn` file changes,
-                # then generates ./i18n/default.json and ./content.json
+                # then updates ./i18n/default.json and ./content.json
 ```
 
 ![Done with Bun](./dun-with-bun.png)¹

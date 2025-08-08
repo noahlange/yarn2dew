@@ -4,18 +4,23 @@ start: 100,-100
 music: Cowboy_OVERWORLD
 location: AdventureGuild
 ---
+// preconditions
+<<when Time 1900 2300>>
+<<when Friendship Marlon 750>>
+// positioning data
 <<start farmer 4 15 0>>
 <<start Marlon 4 11 2>>
 <<changeLocation AdventureGuild>>
 <<viewport 4 11>>
 <<move farmer 0 -2 0>>
-
 Marlon: You're going on an adventure!
 Whaddya say?
 -> Neat-o!
   Marlon: Have you ever been on an adventure before?
+  <<if MineLowestLevelReached(50)>>
   -> Of course I have!
     <<jump AdventureStart>>
+  <<endif>>
   -> I haven't—do you have any tips or tricks?
     <<jump AdventureTips>>
 -> I don't want to go on an adventure!

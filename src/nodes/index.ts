@@ -11,6 +11,7 @@ import { ResponseNode } from './ResponseNode';
 import { MessageNode } from './MessageNode';
 import { SpeakNode } from './SpeakNode';
 import { QuestionNode } from './QuestionNode';
+import { ConditionNode } from './ConditionNode';
 
 export type AnyNode =
   | CommandNode
@@ -24,7 +25,8 @@ export type AnyNode =
   | ResponseNode
   | JumpNode
   | WhenNode
-  | StartNode;
+  | StartNode
+  | ConditionNode;
 
 export {
   CommandNode,
@@ -39,5 +41,6 @@ export {
   ResponseNode,
   Node,
   WhenNode,
-  StartNode
+  StartNode,
+  ConditionNode
 };

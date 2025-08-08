@@ -1,7 +1,7 @@
 import bondage, { type Runner } from '@mnbroatch/bondage/src/index.js';
-import { type NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
+import nodes, { type NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
 import * as $ from '../nodes';
-import { match } from 'ts-pattern';
+import { match, P } from 'ts-pattern';
 
 export type ParseResult<T> = { next: number; value: T };
 
@@ -18,31 +18,49 @@ export class Parser {
     return (
       match(node)
         // text/message nodes
-        .with({ type: 'TextNode' }, n => $.TextNode.parse(this, n, ns))
-        .with({ type: 'InlineExpressionNode' }, n => $.LiteralNode.parse(this, n, ns))
-        .with({ type: 'JumpCommandNode' }, n => $.JumpNode.parse(this, n, ns))
-        .with({ type: 'StopCommandNode' }, n => $.CommandNode.parse(this, n, ns))
-        .with({ type: 'GenericCommandNode' }, n => $.CommandNode.parse(this, n, ns))
+        .with(P.instanceOf(nodes.TextNode), n => $.TextNode.parse(this, n, ns))
+        .with(P.instanceOf(nodes.InlineExpressionNode), n => $.LiteralNode.parse(this, n, ns))
+        .with(P.instanceOf(nodes.JumpCommandNode), n => $.JumpNode.parse(this, n, ns))
+        .with(P.instanceOf(nodes.StopCommandNode), n => $.CommandNode.parse(this, n, ns))
+        .with(P.instanceOf(nodes.GenericCommandNode), n => $.CommandNode.parse(this, n, ns))
+        .with(P.instanceOf(nodes.IfNode), n => $.ConditionNode.parse(this, n, ns))
+        .with(P.instanceOf(nodes.IfElseNode), n => $.ConditionNode.parse(this, n, ns))
         .otherwise(node => {
-          throw new Error(`Unsupported node type ${node.type} at line ${this.getLine(node)}`);
+          throw new Error(`Unsupported node type ${'type' in node ? node.type : '???'} at line ${this.getLine(node)}`);
         })
     );
   }
 
-  public process(ast: NodeType[]) {
-    let { next, value }: ParseResult<$.AnyNode | null> = {
-      next: 0,
-      value: null
-    };
+  public process(ast: NodeType[], addTrailingEnd: boolean = false) {
+    let state: ParseResult<$.AnyNode | null> = { next: 0, value: null };
     const nodes: $.AnyNode[] = [];
-    while (next < ast.length) {
-      const res = this.next(ast[next], ast);
-      if (res.next === next) {
-        throw new Error(`failed to parse node "${ast[next].type}"`);
+    while (state.next < ast.length) {
+      const res = this.next(ast[state.next], ast);
+      if (res.next === state.next) {
+        const nextNode = ast[state.next];
+        const nodeType = 'type' in nextNode ? nextNode.type : '???';
+        throw new Error(`failed to parse node "${nodeType}"`);
       }
-      next = res.next;
-      value = res.value;
-      if (value) nodes.push(value);
+
+      state.next = res.next;
+      state.value = res.value;
+
+      if (state.value) nodes.push(state.value);
+    }
+
+    if (addTrailingEnd) {
+      const addNode = match(nodes.at(-1))
+        .with(P.nullish, () => false)
+        .with(P.instanceOf($.JumpNode), () => false)
+        .when(
+          c => c instanceof $.CommandNode && c.name !== 'end',
+          () => false
+        )
+        .otherwise(() => true);
+
+      if (addNode) {
+        nodes.push(new $.CommandNode('end'));
+      }
     }
     return nodes;
   }
@@ -56,7 +74,7 @@ export class Parser {
     return new $.DocumentNode(
       Object.keys(this.runner.yarnNodes).map(key => {
         const { parserNodes, metadata } = this.runner!.getParserNodes(key);
-        const processed = this.process(parserNodes.filter(Boolean));
+        const processed = this.process(parserNodes.filter(Boolean), true);
         Object.assign(meta, metadata);
         return new $.RootNode(processed, metadata);
       }),

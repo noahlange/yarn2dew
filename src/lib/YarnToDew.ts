@@ -1,18 +1,20 @@
 import { watch } from 'fs/promises';
-import type { BuilderOutput } from '../types';
+import type { BuilderOutput, ContentPatcherManifest, IncludeChange } from '../types';
 import { Patcher } from './Patcher';
 import { readdir } from 'fs/promises';
-import { join, resolve } from 'path';
-import { getModId } from '../utils';
+import { join, normalize, resolve } from 'path';
+import { getContent } from '../utils';
 
 export class YarnToDew {
   private patcher = new Patcher();
   private selfChanges: Set<string> = new Set();
+  private blacklist = new Set(['content.json', 'manifest.json']);
+  private namespace!: string;
 
-  public async process(name: string, source: string): Promise<void> {
+  public async process(source: string): Promise<void> {
     const res = await new Promise<BuilderOutput>((resolve, reject) => {
       const w = new Worker(new URL('./Worker.ts', import.meta.url));
-      w.postMessage({ name, source });
+      w.postMessage({ name: this.namespace, source });
       w.addEventListener('message', (e: MessageEvent<BuilderOutput>) => resolve(e.data));
       w.addEventListener('error', reject);
     });
@@ -21,44 +23,43 @@ export class YarnToDew {
   }
 
   public load(file: string, content: string) {
-    if (file.endsWith('.json')) {
-      this.patcher.load(file, JSON.parse(content));
+    if (file.endsWith('.json') && !file.endsWith('.sls.json')) {
+      this.patcher.add(file, JSON.parse(content));
     }
   }
 
   private async reads() {
     const watcher = watch(this.directory, { recursive: true });
     for await (const event of watcher) {
-      if (this.selfChanges.has(event.filename!)) {
-        this.selfChanges.delete(event.filename!);
-      } else {
+      const normalized = normalize(event.filename!).toLowerCase();
+      if (this.selfChanges.has(normalized)) {
+        this.selfChanges.delete(normalized);
+      } else if (!this.blacklist.has(normalized)) {
         console.log(`🧶 detected ${event.eventType} in "${event.filename}"`);
-        const text = await Bun.file(join(this.directory, event.filename!)).text();
-        this.process(event.filename!, text);
+        this.process(await Bun.file(join(this.directory, event.filename!)).text());
       }
     }
   }
 
   private async writes() {
     for await (const [filename, data] of this.patcher.patches()) {
-      this.selfChanges.add(filename);
       console.log(`\t ✅ updated ${filename}`);
-      await Bun.write(filename, JSON.stringify(data));
+      this.selfChanges.add(normalize(filename).toLowerCase());
+      await Bun.write(filename, JSON.stringify(data, null, 2));
     }
   }
 
   public async start() {
     await this.preload();
-    const id = await getModId(this.directory);
-    console.log(`watching mod ${id} for changes`);
+    console.log(`watching mod ${this.namespace} for changes`);
     await Promise.all([this.writes(), this.reads()]);
   }
 
   private async preload() {
-    const files = await readdir(process.cwd(), { recursive: true });
+    const { Changes = [] } = await getContent(this.directory);
     await Promise.all(
-      files
-        .filter(f => f.endsWith('.json') || f.endsWith('.yarn'))
+      Changes.filter((c): c is IncludeChange => c.Action === 'Include')
+        .flatMap(c => c.FromFile.split(','))
         .map(async filename => {
           const file = Bun.file(resolve(process.cwd(), filename));
           this.load(filename, await file.text());
@@ -66,5 +67,10 @@ export class YarnToDew {
     );
   }
 
-  constructor(public directory: string) {}
+  constructor(
+    public manifest: ContentPatcherManifest,
+    public directory: string
+  ) {
+    this.namespace = manifest.UniqueID;
+  }
 }
