@@ -2,30 +2,27 @@
 
 Compile dialogue files written in [Yarn](https://www.yarnspinner.dev/) to static JSON content that can be imported "natively" as events into Stardew Valley via Content Patcher.
 
-## what in the name of yoba
+The SDV event format is not the easiest to work with. Yarn is easier to work with for writers _and_ programmers and supports a feature set that would be onerous to implement by hand in SDV. And while some parts of that feature set _does_ require the Yarn runtime, not _all_ of it does.
 
-The SDV event format is not the easiest to work with, especially for non-programmers. Yarn is easier to work with for writers _and_ programmers and supports a feature set that would be onerous to implement by hand in SDV.
-
-While some parts of that feature set does require the Yarn runtime, not _all_ of it does.
-
-## so why would you make this
-
-### support…?
+## Features
 
 - [x] Content Patcher-compatible output
-- [x] branching dialogue trees
+- [x] branching dialogue
 - [x] ✨ automagical ✨ localization
-- [x] event conditions
-- [x] game state queries
-- [x] arbitrary commands w/ parameters
-  - [x] `jump`
-  - [x] `wait` (same as `pause`, just in seconds)
-  - [x] `stop` (same as `end`)
+- [x] event conditions, game state queries
+- [x] commands
+  - [x] arbitrary commands (e.g.,`<<move farmer 3 4>>`)
+  - [x] literal commands (e.g., `<<$ jump farmer 8>>`)
+  - [x] yarn built-ins
+    - [x] `jump` (use `$ jump` for SDV's "jump")
+    - [x] `wait` (same as `pause`, just in seconds)
+    - [x] `stop` (same as `end`)
+  - [x] automatic `end` insertion
 
-### …but _not_…?
+### Unsupported
 
-- runtimey Yarn features
-  - advanced flow control: `detour`, `return`
+- runtime-y features
+  - flow control: `if`, `else`, `elseif`, `detour`, `return`
   - variables: `set`, `declare`, `enum`
   - state: `once`, `endonce`
   - line, node groups
@@ -33,31 +30,45 @@ While some parts of that feature set does require the Yarn runtime, not _all_ of
 - some Stardew features
   - whatever the heck forks are
 
-### …but eventually, maybe?
+## Notes
 
-- [ ] flow-through prompts w/ reactions
-- [ ] automatic `<<end>>` insert
-- [ ] super-basic flow control: `<<if>>`, `<<else>>`, `<<elseif>>`
-- [ ] shims for select Yarn built-ins
-  - [ ] `random`
+### Target
 
-## how do you even
+Every entry node must have a `Target` field corresponding to ContentPatcher's Target field.
 
-Dump this in a `.yarn` file.
+### Output
+
+Include a "filename" key in the top-level node metadata to write events to a specific file.
+
+### Preconditions
+
+Use the `when` command to add runtime constraints on when an event can run.
+
+```yarn
+<<when Weather Sun>>
+
+// inline function syntax for game state queries (for autcompletion)
+<<when {BuildingsConstructed("Here", "Junimo Hut")}>>
+<<when {MineLowestLevelReached(50)}>>
+
+// raw game state queries
+<<when GameStateQuery !WEATHER Here Sun>>
+```
+
+## Example
 
 ```yarn
 title: Adventure
 position: -227,-211
 start: 100,-100
 music: Cowboy_OVERWORLD
-location: AdventureGuild
+target: Data/Events/AdventureGuild
 ---
 # start with preconditions
 <<when Time 1900 2300>
 <<when Friendship Marlon 750>>
 
-# then start position data
-<<changeLocation AdventureGuild>>
+# then position data
 <<start Marlon 4 11 2>>
 <<start farmer 4 15 0>>
 <<viewport 4 11>>
@@ -87,6 +98,8 @@ title: AdventureStart
 position: 63,12
 ---
 Marlon: Then get out there, adventurer! $h
+Marlon: Ah, yes—before I forget, here's some spending money.
+<<action AddMoney 1>>
 <<end>>
 ===
 
@@ -101,9 +114,7 @@ Marlon: We'll see what Grandpa has to say about this!
 
 ## Tooling
 
-There's a very basic implementation of a watching content patcher. It may maul existing `content.json` files, so you'll probably want to keep those in Git just in case.
-
-You can include a "source" key in the top-level node metadata to write specific events to a particular file.
+There's a very basic implementation of a watching content patcher. It may maul existing `content.json` files, so you'll _probably_ want to keep those in Git just in case.
 
 ```sh
 bun run dist    # creates an executable

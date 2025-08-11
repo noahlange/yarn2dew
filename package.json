@@ -14,6 +14,6 @@
     "dist": "bun build ./src/task.ts --outfile yarn2dew --compile",
     "dev:types": "tsc --noEmit",
     "dev:pretty": "prettier --write 'src/**/*.ts'",
-    "check": "bun test && bun run dev:types && bun run dev:pretty"
+    "check": "bun run dev:pretty && bun run dev:types && bun test"
   }
 }

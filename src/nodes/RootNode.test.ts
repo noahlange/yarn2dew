@@ -6,7 +6,7 @@ const y2sdv = generate(
   'MyTest',
   `
     title: Main
-    location: Saloon
+    target: Data/Events/Saloon
     music: rain
     start: -100,-100
     ---

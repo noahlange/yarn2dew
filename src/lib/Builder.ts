@@ -6,9 +6,8 @@ export class Builder {
   public emit(): BuilderOutput {
     const targets = Object.groupBy(
       Object.values(this.frames)
-        .filter(f => f.type !== ScopeType.NONE)
-        .filter(f => f.content.length)
-        .map(value => ({ ...value, ...this.getTarget(value) }))
+        .filter(f => f.type !== ScopeType.NONE && f.content.length)
+        .map(value => ({ ...value, target: this.options.target, key: this.getEventKey(value) }))
         .filter(f => f.target),
       e => e.target!
     );
@@ -29,35 +28,15 @@ export class Builder {
 
     return {
       content,
-      source: this.source,
+      source: this.options.filename,
       i18n: Object.entries(this.i18n).reduce(
         (a, [key, value]) => ({
           ...a,
-          [`${this.namespace}.${key}`]: value
+          [`${this.options.namespace}.${key}`]: value
         }),
         {} as I18N
       )
     };
-  }
-
-  private getTarget(content: Scope) {
-    const location = content.state[ScopeType.MAP];
-    const npc = content.state[ScopeType.NPC];
-    const event = content.state[ScopeType.EVENT];
-    if (location) {
-      return {
-        target: `Data/Events/${location}`,
-        key: this.getEventKey(content)
-      };
-    } else if (npc) {
-      return {
-        target: `Characters/Dialogue/${npc}`,
-        key: `${this.namespace}.${content.name}`
-      };
-    } else {
-      console.log(content);
-      throw new Error('Could not resolve target for content');
-    }
   }
 
   private getEventKey(content: Scope) {
@@ -65,13 +44,19 @@ export class Builder {
       .map(([k, v]) => `${k} ${v}`)
       .join('/');
 
-    return prereq ? `${this.namespace}.${content.name}/${prereq}` : `${this.namespace}.${content.name}`;
+    return prereq ? `${this.options.namespace}.${content.name}/${prereq}` : `${this.options.namespace}.${content.name}`;
   }
 
   public constructor(
-    private namespace: string,
     private frames: Scope[],
     private i18n: Record<string, string>,
-    private source?: string
+    private options: BuilderOptions
   ) {}
+}
+
+interface BuilderOptions {
+  namespace: string;
+  target: string;
+  source?: string;
+  filename?: string;
 }

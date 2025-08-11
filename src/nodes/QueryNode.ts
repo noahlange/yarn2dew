@@ -1,15 +1,16 @@
 import yarn, { type NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
-import type { Compiler, Parser } from '../lib';
+import type { Compiler, Parser, ParseResult } from '../lib';
 import { Node } from './Node';
 import { match, P } from 'ts-pattern';
 import { LiteralNode } from './LiteralNode';
 import { toScreamingSnakeCase } from '../utils';
 
 export class QueryNode extends Node {
-  public readonly type = 'query';
-
-  public static parse(parser: Parser, node: NodeType, nodes: NodeType[]) {
+  public static parse(parser: Parser, node: NodeType, nodes: NodeType[]): ParseResult<QueryNode> {
     let negated = false;
+    if (node instanceof yarn.InlineExpressionNode) {
+      node = node.expression;
+    }
     if (node instanceof yarn.NegatedBooleanExpressionNode) {
       negated = true;
       node = node.expression;
@@ -33,9 +34,12 @@ export class QueryNode extends Node {
   }
 
   public compile($: Compiler) {
-    $.writeLine('$query ');
     $.write(`${this.negated ? '!' : ''}${this.name} `);
     $.write(this.args.map(arg => arg.compile($)).join(' '));
+  }
+
+  public toString() {
+    return `${this.negated ? '!' : ''}${this.name} "${this.args.map(a => a.toString()).join(' ')}"`;
   }
 
   public constructor(

@@ -4,9 +4,7 @@ import { Builder } from './Builder';
 
 export enum ScopeType {
   NONE,
-  EVENT,
-  NPC,
-  MAP
+  EVENT
 }
 
 export interface Scope {
@@ -15,12 +13,23 @@ export interface Scope {
   prereq: Record<string, string>;
   name: string | null;
   content: string[];
+  count: number;
   state: Partial<Record<ScopeType, string>>;
 }
 
 export class Compiler {
-  public static builderFrom(compiler: Compiler, filename?: string): Builder {
-    return new Builder(compiler.namespace, Object.values(compiler.frames), compiler.i18n, filename);
+  public static compile(namespace: string, node: DocumentNode) {
+    const compiler = new Compiler(namespace, node);
+    compiler.compile();
+    return compiler;
+  }
+
+  public getBuilder(filename?: string): Builder {
+    return new Builder(Object.values(this.frames), this.i18n, {
+      namespace: this.doc.meta.override ? '' : this.namespace,
+      target: this.doc.meta.target,
+      filename
+    });
   }
 
   private getNewScope(type: ScopeType, name: string | null = null): number {
@@ -29,7 +38,7 @@ export class Compiler {
       .filter(s => s.type !== ScopeType.NONE)
       .reduce((a, b) => ({ ...a, [b.type]: b.name }), {});
     const id = ++this.scopeID;
-    this.frames[id] = { id, type, name, content: [], prereq: {}, state };
+    this.frames[id] = { id, type, name, content: [], prereq: {}, state, count: 0 };
     return id;
   }
 
@@ -37,7 +46,7 @@ export class Compiler {
     // console.log('\t'.repeat(this.stack.length), ...text);
   }
 
-  public useScope(type: ScopeType.EVENT | ScopeType.NPC | ScopeType.MAP, name: string, cb: () => void) {
+  public useScope(type: ScopeType, name: string, cb: () => void) {
     if (this.scope.type !== ScopeType.NONE) {
       this.scope.content = this.buffer.slice();
     }
@@ -58,8 +67,7 @@ export class Compiler {
   }
 
   public getID() {
-    const scope = (this.scopeCounts[this.scope.id] ??= 0) + 1;
-    this.scopeCounts[this.scope.id] = scope;
+    const scope = (this.scope.count += 1);
     const count = scope.toString(16).padStart(2, '0');
     return match(this.scope ?? { type: ScopeType.NONE })
       .with({ type: ScopeType.NONE }, () => `${count}`)
@@ -70,9 +78,6 @@ export class Compiler {
    * Given text, add an i18n entry and return its identifier.
    */
   public getI18nKey(text: string): string {
-    if (!(this.scope.id in this.scopeCounts)) {
-      this.scopeCounts[this.scope.id] = 0;
-    }
     const key = this.getID();
     this.i18n[key] = `${text}`;
     return `i18n:${this.namespace}.${key}`;
@@ -81,7 +86,6 @@ export class Compiler {
   private i18n: Record<string, string> = {};
   private scopeID: number = 0;
   private buffer: string[] = [];
-  private scopeCounts: Record<number, number> = {};
   private frames: Record<number, Scope> = {};
   private stack: number[] = [];
 
@@ -117,18 +121,15 @@ export class Compiler {
     this.scope.prereq[key] = value;
   }
 
-  public compile(doc: DocumentNode) {
-    this.stack = [this.getNewScope(ScopeType.NONE)];
-    this.buffer = [];
-    const location = doc.meta.location?.trim();
-    const fn = () => doc.compile(this);
-
-    if (location) {
-      this.useScope(ScopeType.MAP, location, fn);
-    } else {
-      fn();
-    }
+  public compile() {
+    this.doc.compile(this);
   }
 
-  constructor(public namespace: string) {}
+  private constructor(
+    public namespace: string,
+    private doc: DocumentNode
+  ) {
+    this.stack = [this.getNewScope(ScopeType.NONE)];
+    this.buffer = [];
+  }
 }

@@ -1,7 +1,6 @@
 import { watch } from 'fs/promises';
 import type { BuilderOutput, ContentPatcherManifest, IncludeChange } from '../types';
 import { Patcher } from './Patcher';
-import { readdir } from 'fs/promises';
 import { join, normalize, resolve } from 'path';
 import { getContent } from '../utils';
 

@@ -7,6 +7,8 @@ location: AdventureGuild
 // preconditions
 <<when Time 1900 2300>>
 <<when Friendship Marlon 750>>
+<<when {MineLowestLevelReached(50)}>>
+
 // positioning data
 <<start farmer 4 15 0>>
 <<start Marlon 4 11 2>>

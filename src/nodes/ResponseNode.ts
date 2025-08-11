@@ -18,7 +18,6 @@ export class ResponseNode {
 
   public i18n: string | null = null;
   public id: string | null = null;
-  public readonly type = 'ResponseNode';
 
   constructor(
     public text: string,

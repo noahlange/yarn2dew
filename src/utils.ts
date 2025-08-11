@@ -10,6 +10,13 @@ export function stringifyTextNode(node: OfOrArrayOf<InstanceType<typeof yarn.Tex
   return (Array.isArray(node) ? node : [node]).map(d => d.text.trim()).join('#$b#');
 }
 
+export function trim(text: string) {
+  return text
+    .split('\n')
+    .map(l => l.trim())
+    .join('\n');
+}
+
 export async function getManifest(dir: string): Promise<ContentPatcherManifest> {
   return Bun.file(join(dir, 'manifest.json')).json();
 }

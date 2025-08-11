@@ -6,7 +6,7 @@ const y2sdv = generate(
   'MyTest',
   `
     title: Main
-    location: Trailer
+    target: Data/Events/Trailer
     ---
     Hello, world!
     ===`

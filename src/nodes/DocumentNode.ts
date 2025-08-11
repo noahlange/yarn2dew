@@ -2,9 +2,14 @@ import type { Compiler } from '../lib';
 import { Node } from './Node';
 import { RootNode } from './RootNode';
 
-export class DocumentNode extends Node {
-  public readonly type = 'DocumentNode';
+export type DocumentMeta = {
+  target: string;
+  title: string;
+  override?: boolean;
+  filename?: string;
+} & { [key: string]: string | number | boolean };
 
+export class DocumentNode extends Node {
   public compile($: Compiler) {
     this.roots.forEach((node, i) => {
       node.meta.entry = i === 0;
@@ -14,8 +19,9 @@ export class DocumentNode extends Node {
 
   constructor(
     public roots: RootNode[],
-    public meta: Record<string, any>
+    public meta: DocumentMeta
   ) {
     super();
+    if (!meta.target) throw new Error('The top-most Yarn node must have a "Target" field.');
   }
 }

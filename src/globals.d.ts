@@ -21,7 +21,8 @@ declare module '@mnbroatch/bondage/src/parser/nodes.js' {
   }
 
   abstract class UnaryExpression extends Expression {
-    public constructor(public expression: Expression);
+    public expression: Expression;
+    public constructor(expression: Expression);
   }
 
   interface LineNo {

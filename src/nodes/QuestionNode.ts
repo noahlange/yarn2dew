@@ -32,8 +32,6 @@ export class QuestionNode implements TextNode {
     };
   }
 
-  public readonly type = 'QuestionNode';
-
   public compile($: Compiler) {
     const i18n = (this.i18n ??= $.getI18nKey(this.text));
 

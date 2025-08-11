@@ -8,7 +8,6 @@ export class SpeakNode implements TextNode {
   }
 
   public i18n: string | null = null;
-  public readonly type = 'SpeakNode';
 
   public constructor(
     public text: string,

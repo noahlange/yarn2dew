@@ -6,6 +6,10 @@ import { match, P } from 'ts-pattern';
 export type ParseResult<T> = { next: number; value: T };
 
 export class Parser {
+  public static parse(text: string) {
+    return new Parser().parse(text);
+  }
+
   private getLine(node: NodeType) {
     if ('lineNum' in node) {
       return node.lineNum;
@@ -19,12 +23,13 @@ export class Parser {
       match(node)
         // text/message nodes
         .with(P.instanceOf(nodes.TextNode), n => $.TextNode.parse(this, n, ns))
+        .with(P.instanceOf(nodes.StringLiteralNode), n => $.LiteralNode.parse(this, n, ns))
+        .with(P.instanceOf(nodes.NumericLiteralNode), n => $.LiteralNode.parse(this, n, ns))
+        .with(P.instanceOf(nodes.BooleanLiteralNode), n => $.LiteralNode.parse(this, n, ns))
         .with(P.instanceOf(nodes.InlineExpressionNode), n => $.LiteralNode.parse(this, n, ns))
         .with(P.instanceOf(nodes.JumpCommandNode), n => $.JumpNode.parse(this, n, ns))
         .with(P.instanceOf(nodes.StopCommandNode), n => $.CommandNode.parse(this, n, ns))
         .with(P.instanceOf(nodes.GenericCommandNode), n => $.CommandNode.parse(this, n, ns))
-        .with(P.instanceOf(nodes.IfNode), n => $.ConditionNode.parse(this, n, ns))
-        .with(P.instanceOf(nodes.IfElseNode), n => $.ConditionNode.parse(this, n, ns))
         .otherwise(node => {
           throw new Error(`Unsupported node type ${'type' in node ? node.type : '???'} at line ${this.getLine(node)}`);
         })
@@ -70,7 +75,7 @@ export class Parser {
   public parse(text: string): $.DocumentNode {
     this.runner = new bondage.Runner();
     this.runner.load(text);
-    let meta = {};
+    let meta: $.DocumentMeta = {} as $.DocumentMeta;
     return new $.DocumentNode(
       Object.keys(this.runner.yarnNodes).map(key => {
         const { parserNodes, metadata } = this.runner!.getParserNodes(key);
