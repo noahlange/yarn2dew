@@ -18,7 +18,7 @@ export interface ContentJSON {
 export type I18N = Record<string, string>;
 
 export interface BuilderOutput {
-  source?: string;
+  filename?: string;
   content: ContentJSON;
   i18n: I18N;
 }

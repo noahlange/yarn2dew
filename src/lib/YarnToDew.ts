@@ -10,14 +10,14 @@ export class YarnToDew {
   private blacklist = new Set(['content.json', 'manifest.json']);
   private namespace!: string;
 
-  public async process(source: string): Promise<void> {
+  public async process(filename: string): Promise<void> {
     const res = await new Promise<BuilderOutput>((resolve, reject) => {
       const w = new Worker(new URL('./Worker.ts', import.meta.url));
-      w.postMessage({ name: this.namespace, source });
+      w.postMessage({ namespace: this.namespace, filename });
       w.addEventListener('message', (e: MessageEvent<BuilderOutput>) => resolve(e.data));
       w.addEventListener('error', reject);
     });
-    this.patcher.add(res.source ?? 'content.json', res.content);
+    this.patcher.add(res.filename ?? 'content.json', res.content);
     this.patcher.add('i18n/default.json', res.i18n);
   }
 

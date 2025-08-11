@@ -28,7 +28,7 @@ export class Builder {
 
     return {
       content,
-      source: this.options.filename,
+      filename: this.options.filename,
       i18n: Object.entries(this.i18n).reduce(
         (a, [key, value]) => ({
           ...a,
