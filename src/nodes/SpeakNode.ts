@@ -1,24 +1,21 @@
 import type { Compiler } from '../lib';
-import { TextNode } from './TextNode';
 
-export class SpeakNode implements TextNode {
+export class SpeakNode {
   public compile($: Compiler) {
-    this.i18n ??= $.getI18nKey(this.text);
-    $.writeLine(`speak ${this.speaker} {{${this.i18n}}}`);
-  }
+    $.writeLine(this.speaker ? `speak ${this.speaker} "` : `message "`);
 
-  public i18n: string | null = null;
+    $.write(
+      this.chunks
+        .map(chunk => (chunk.startsWith('i18n:') ? chunk : $.getI18nKey(chunk)))
+        .map(v => `{{${v}}}`)
+        .join(' ')
+    );
+
+    $.write('"');
+  }
 
   public constructor(
-    public text: string,
-    public speaker: string
-  ) {
-    let trimmed = text.trim();
-    if (trimmed.startsWith('i18n:')) {
-      this.i18n = trimmed;
-    } else {
-      // add quotes
-      this.text = `"${trimmed}"`;
-    }
-  }
+    public chunks: string[],
+    public speaker: string | null = null
+  ) {}
 }

@@ -11,7 +11,7 @@ export interface IncludeChange extends ChangeEntry {
 }
 
 export interface ContentJSON {
-  Format: string;
+  Format?: string;
   Changes: Array<ChangeEntry | IncludeChange>;
 }
 

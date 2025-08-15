@@ -13,27 +13,39 @@ export abstract class TextNode extends Node {
     node: InstanceType<typeof yarn.TextNode>,
     nodes: NodeType[]
   ): ParseResult<SpeakNode | MessageNode | LiteralNode | QuestionNode> {
-    const index = nodes.indexOf(node);
-
-    let next = nodes[index + 1];
     let nodeText = node.text;
-    let nextIndex = index + 1;
+    let [rawName, rawText = null] = nodeText.split(':');
+    let speaker = rawText ? rawName : null;
+    let text = rawText ? rawText.trimStart() : rawName;
+
+    let nextIndex = nodes.indexOf(node) + 1;
+    let next = nodes[nextIndex];
+    let line = node.lineNum;
+    let chunks = [];
 
     if (next instanceof yarn.DialogShortcutNode) {
       return QuestionNode.parse(parser, node, nodes);
-    } else if (next instanceof yarn.InlineExpressionNode) {
-      nodeText += LiteralNode.parse(parser, next, nodes).value.value;
-      nextIndex += 1;
+    } else {
+      while (next && 'lineNum' in next && next.lineNum === line) {
+        nextIndex += 1;
+        if (next instanceof yarn.InlineExpressionNode) {
+          text += LiteralNode.parse(parser, next, []).value.value;
+        } else if (next instanceof yarn.TextNode) {
+          text += next.text;
+        }
+        next = nodes[nextIndex];
+      }
     }
 
-    let [name, text] = nodeText.split(': ');
-    let nodeSpeaker = text ? name : null;
+    if (text) {
+      chunks.push(text);
+    }
 
-    return {
-      next: nextIndex,
-      value: nodeSpeaker ? new SpeakNode(text, nodeSpeaker) : new MessageNode(nodeText)
-    };
+    if (!chunks.length) {
+      console.log({ node, chunks });
+      throw new Error('no chunks for node???');
+    }
+
+    return { next: nextIndex, value: new SpeakNode(chunks, speaker) };
   }
-
-  public i18n: string | null = null;
 }

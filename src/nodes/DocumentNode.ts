@@ -22,6 +22,9 @@ export class DocumentNode extends Node {
     public meta: DocumentMeta
   ) {
     super();
-    if (!meta.target) throw new Error('The top-most Yarn node must have a "Target" field.');
+    if (!meta.target) {
+      console.log(meta);
+      throw new Error('The top-most Yarn node must have a "Target" field.');
+    }
   }
 }

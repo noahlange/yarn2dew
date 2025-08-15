@@ -4,7 +4,7 @@ import { Compiler, ScopeType } from '../lib';
 export class ResponseNode {
   public precompile($: Compiler) {
     this.i18n ??= $.getI18nKey(this.text);
-    this.id = this.content.find(c => c instanceof JumpNode)?.destination ?? $.getID();
+    this.id = this.content.find(c => c instanceof JumpNode)?.destination ?? null;
   }
 
   public compile($: Compiler) {
@@ -29,7 +29,7 @@ export class ResponseNode {
       this.i18n = trimmed;
     } else {
       // remove quotes
-      this.text = trimmed.replaceAll(/(?:^\"|\"$)/gim, '');
+      this.text = trimmed;
     }
   }
 }

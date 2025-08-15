@@ -4,7 +4,8 @@
   "description": "Compiles Yarn dialogue to Stardew Valley event format.",
   "devDependencies": {
     "@types/bun": "^1.2.19",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "prettier": "^3.6.2"
   },
   "dependencies": {
     "@mnbroatch/bondage": "^4.2.4",

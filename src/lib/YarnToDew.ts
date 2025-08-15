@@ -31,6 +31,7 @@ export class YarnToDew {
     const watcher = watch(this.directory, { recursive: true });
     for await (const event of watcher) {
       const normalized = normalize(event.filename!).toLowerCase();
+      if (!normalized.endsWith('.yarn')) continue;
       if (this.selfChanges.has(normalized)) {
         this.selfChanges.delete(normalized);
       } else if (!this.blacklist.has(normalized)) {

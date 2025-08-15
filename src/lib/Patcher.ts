@@ -33,10 +33,10 @@ export class Patcher {
       Object.assign(next, { Format: '2.7.0' });
     }
 
-    if (next != curr) {
-      this.files[file] = next;
-      this.updates.add(file);
-    }
+    // if (next != curr) {
+    this.files[file] = next;
+    this.updates.add(file);
+    // }
   }
 
   public async *patches(): AsyncIterable<Change> {

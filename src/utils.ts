@@ -7,7 +7,7 @@ export function getExpressionValue(expression: InstanceType<typeof yarn.InlineEx
 }
 
 export function stringifyTextNode(node: OfOrArrayOf<InstanceType<typeof yarn.TextNode>>) {
-  return (Array.isArray(node) ? node : [node]).map(d => d.text.trim()).join('#$b#');
+  return (Array.isArray(node) ? node : [node]).map(d => d.text.trim()).join(' #$b# ');
 }
 
 export function trim(text: string) {
@@ -22,7 +22,7 @@ export async function getManifest(dir: string): Promise<ContentPatcherManifest> 
 }
 
 export function getContentPatch(changes: ChangeEntry[]): ContentJSON {
-  return { Format: '2.7.0', Changes: changes };
+  return { Changes: changes };
 }
 
 export function getContentEntries(content: ContentJSON): Record<string, string> {
@@ -39,3 +39,5 @@ export function toScreamingSnakeCase(str: string) {
     .join('_')
     .toUpperCase();
 }
+
+export function escapeDialogue(text: string): string {}
