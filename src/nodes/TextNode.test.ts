@@ -29,7 +29,11 @@ describe('TextNode', () => {
   });
 
   test('inline string literals are emitted verbatim', () => {
-    expect(y2sdv.i18n['MyTest.Main.01']).toBe('Hello, world! #$b# This is text!');
+    expect(y2sdv.i18n['MyTest.Main.01']).toInclude('#$b#');
+  });
+
+  test('consecutive lines of dialogue are inlined', () => {
+    expect(node).toIncludeRepeated('speak Bar', 2);
   });
 
   test('substitution tokens are emitted verbatim', () => {

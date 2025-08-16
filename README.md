@@ -10,12 +10,13 @@ The SDV event format is not the easiest to work with. Yarn is easier to work wit
 - [x] branching dialogue
 - [x] ✨ automagical ✨ localization
 - [x] event conditions, game state queries
+- [x] consecutive dialogue inlining
 - [x] commands
   - [x] arbitrary commands (e.g.,`<<move farmer 3 4>>`)
   - [x] literal commands (e.g., `<<$ jump farmer 8>>`)
   - [x] yarn built-ins
     - [x] `jump` (use `$ jump` for SDV's "jump")
-    - [x] `wait` (same as `pause`, just in seconds)
+    - [x] `wait` (converted to `pause`)
     - [x] `stop` (same as `end`)
   - [x] automatic `end` insertion
 
@@ -32,11 +33,11 @@ The SDV event format is not the easiest to work with. Yarn is easier to work wit
 
 ## Notes
 
-### Target
+### `target`
 
-Every entry node must have a `Target` field corresponding to ContentPatcher's Target field.
+Every entry node must have a `target` field corresponding to ContentPatcher's Target field.
 
-### Output
+### `filename`
 
 Include a "filename" key in the top-level node metadata to write events to a specific file.
 
@@ -47,7 +48,7 @@ Use the `when` command to add runtime constraints on when an event can run.
 ```yarn
 <<when Weather Sun>>
 
-// inline function syntax for game state queries (for autcompletion)
+// inline function syntax for game state queries (for autocompletion)
 <<when {BuildingsConstructed("Here", "Junimo Hut")}>>
 <<when {MineLowestLevelReached(50)}>>
 
@@ -57,25 +58,26 @@ Use the `when` command to add runtime constraints on when an event can run.
 
 ## Example
 
-```yarn
-title: Adventure
+```yarntitle: Adventure
 position: -227,-211
 start: 100,-100
 music: Cowboy_OVERWORLD
-target: Data/Events/AdventureGuild
+location: AdventureGuild
 ---
-# start with preconditions
-<<when Time 1900 2300>
+// preconditions
+<<when Time 1900 2300>>
 <<when Friendship Marlon 750>>
+<<when {MineLowestLevelReached(50)}>>
 
-# then position data
-<<start Marlon 4 11 2>>
+// positioning data
 <<start farmer 4 15 0>>
+<<start Marlon 4 11 2>>
+<<changeLocation AdventureGuild>>
+
+// content
 <<viewport 4 11>>
 <<move farmer 0 -2 0>>
-
-# then content
-Marlon: I'm going to send you on an adventure!
+Marlon: You're obligated to go on an adventure this {"{{Season}}"}!
 Whaddya say?
 -> Neat-o!
   Marlon: Have you ever been on an adventure before?
@@ -90,16 +92,18 @@ Whaddya say?
 title: AdventureTips
 position: 59,-233
 ---
-Marlon regales you with tales of adventure and derring-do, though unfortunately lacking any educational content whatsoever.
+Marlon regales you with tales of adventure and derring-do, bereft of any educational content whatsoever.
 <<jump AdventureStart>>
 ===
 
 title: AdventureStart
 position: 63,12
 ---
+// these are inlined and separated with a "#$b#"
 Marlon: Then get out there, adventurer! $h
 Marlon: Ah, yes—before I forget, here's some spending money.
 <<action AddMoney 1>>
+<<$ jump farmer>> // "Jump" must use a command literal
 <<end>>
 ===
 
@@ -107,8 +111,8 @@ title: AdventureFail
 position: -215,31
 ---
 Marlon: *Hmph.* $a
-Marlon: We'll see what Grandpa has to say about this!
-<<end>>
+Marlon: We'll see how your grandpa feels about that!
+// <<end>> is inserted automatically
 ===
 ```
 
@@ -125,3 +129,14 @@ bun run dist    # creates an executable
 ![Done with Bun](./dun-with-bun.png)¹
 
 ¹ this project has not been endorsed by Bun
+
+# content patchinator
+
+```json
+{
+  "Changes": [
+    { "Action": "IncludeGlob", "FromFile": "**/*.yarn" },
+    { "Action": "Embed", "FromFile": "**/*.json" }
+  ]
+}
+```

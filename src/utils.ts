@@ -28,6 +28,7 @@ export function getContentPatch(changes: ChangeEntry[]): ContentJSON {
 export function getContentEntries(content: ContentJSON): Record<string, string> {
   return content.Changes.reduce((a, content) => Object.assign(a, content.Entries), {});
 }
+
 export async function getContent(dir: string): Promise<ContentJSON> {
   return Bun.file(join(dir, 'content.json')).json();
 }

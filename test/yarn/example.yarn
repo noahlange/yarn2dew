@@ -15,14 +15,12 @@ location: AdventureGuild
 <<changeLocation AdventureGuild>>
 <<viewport 4 11>>
 <<move farmer 0 -2 0>>
-Marlon: You're going on an adventure this {"{{Season}}"}!
+Marlon: You're obligated to go on an adventure this {"{{Season}}"}!
 Whaddya say?
 -> Neat-o!
   Marlon: Have you ever been on an adventure before?
-  <<if MineLowestLevelReached(50)>>
   -> Of course I have!
     <<jump AdventureStart>>
-  <<endif>>
   -> I haven't—do you have any tips or tricks?
     <<jump AdventureTips>>
 -> I don't want to go on an adventure!
@@ -39,8 +37,11 @@ Marlon regales you with tales of adventure and derring-do, bereft of any educati
 title: AdventureStart
 position: 63,12
 ---
+// these are inlined and separated with a "#$b#"
 Marlon: Then get out there, adventurer! $h
-<<end>>
+Marlon: Ah, yes—before I forget, here's some spending money.
+<<action AddMoney 1>>
+// <<end>> is inserted automatically
 ===
 
 title: AdventureFail
@@ -48,5 +49,5 @@ position: -215,31
 ---
 Marlon: *Hmph.* $a
 Marlon: We'll see how your grandpa feels about that!
-<<end>>
+// <<end>> is inserted automatically
 ===

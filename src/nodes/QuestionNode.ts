@@ -1,12 +1,11 @@
 import yarn, { type NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
 import type { Parser, Compiler, ParseResult } from '../lib';
-import { TextNode } from './TextNode';
 import { stringifyTextNode } from '../utils';
 import { ResponseNode } from './ResponseNode';
 
 type DialogShortcutNode = InstanceType<typeof yarn.DialogShortcutNode>;
 
-export class QuestionNode implements TextNode {
+export class QuestionNode {
   public static parse(
     parser: Parser,
     node: InstanceType<typeof yarn.TextNode>,
@@ -45,7 +44,9 @@ export class QuestionNode implements TextNode {
         .map(r => `{{${r.i18n}}}`)
         .join('#')}`
     );
+
     $.write('(break)');
+
     for (const response of this.responses) {
       if (response.id) {
         $.writeLine(`switchEvent "${$.namespace}.${response.id}"`);
@@ -54,6 +55,7 @@ export class QuestionNode implements TextNode {
       }
       $.write(' (break)');
     }
+
     for (const r of this.responses) {
       if (r.id) r.compile($);
     }
