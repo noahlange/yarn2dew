@@ -1,4 +1,4 @@
-import type { Macro } from './lib';
+import type { Compiler } from './lib';
 
 export interface ChangeEntry {
   LogName?: string;
@@ -54,3 +54,6 @@ export interface Y2DConfig {
   macros: Record<string, Macro>;
   commands: Record<string, Macro>;
 }
+
+export type State = Record<string, Record<string, string>>;
+export type Macro = ($: Compiler, state: State, ...args: string[]) => void;

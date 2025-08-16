@@ -1,19 +1,17 @@
 import type { Compiler, State } from '../lib';
 
-export function beginFade($: Compiler, state: State, time: string, toContinue: string) {
-  state.beginFade = { time, toContinue: toContinue };
+export function beginFade($: Compiler, state: State, time: string = '0.007', toContinue: string = 'false') {
+  state.beginFade = { time, toContinue };
   $.writeLine(`globalFade ${time} ${toContinue != 'false'}`);
-  $.writeLine('viewport -100 -100');
+  // if viewport's been set, assume we want the screen to go dark
+  if ('viewport' in state) $.writeLine('viewport -100 -100');
 }
 
 export function endFade($: Compiler, state: State) {
-  if (typeof state.beginFade != 'object') {
-    throw new Error('must begin fade before ending');
-  } else {
-    const { toContinue, time } = state.beginFade;
-    if (typeof state.viewport === 'object') {
-      $.writeLine(`viewport ${state.viewport.x} ${state.viewport.y}`);
-      $.writeLine(`globalFadeToClear ${time} ${toContinue != 'false'}`);
-    }
-  }
+  // reset viewport to its initial value
+  const { x = null, y = null } = state.viewport ?? { x: null, y: null };
+  if (x !== null && y != null) $.writeLine(`viewport ${x} ${y}`);
+  // normal fade-in behavior
+  const { time = 0.007, toContinue = 'true' } = state.beginFade;
+  $.writeLine(`globalFadeToClear ${time} ${toContinue != 'false'}`);
 }

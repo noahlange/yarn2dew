@@ -1,7 +1,7 @@
 import { match } from 'ts-pattern';
 import { DocumentNode } from '../nodes';
 import { Builder } from './Builder';
-import type { Y2DConfig, Y2DPartialConfig } from '../types';
+import type { State, Y2DConfig, Y2DPartialConfig } from '../types';
 import commands from '../commands';
 import macros from '../macros';
 
@@ -9,10 +9,6 @@ export enum ScopeType {
   NONE,
   EVENT
 }
-
-export type State = Record<string, string | Record<string, string>>;
-
-export type Macro = ($: Compiler, state: State, ...args: string[]) => void;
 
 export interface Scope {
   id: number;
@@ -91,12 +87,11 @@ export class Compiler {
   private frames: Record<number, Scope> = {};
   private stack: number[] = [];
   public config: Y2DConfig;
+  private state: State = {};
 
   public get namespace() {
     return this.config.namespace;
   }
-
-  private state: State = {};
 
   public get scope() {
     const id = this.stack.at(-1)!;
@@ -138,6 +133,7 @@ export class Compiler {
     config: Y2DPartialConfig,
     private doc: DocumentNode
   ) {
+    this.state = {};
     this.config = { macros, commands, directory: process.cwd(), ...config };
     this.stack = [this.getNewScope(ScopeType.NONE)];
     this.buffer = [];
