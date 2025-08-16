@@ -1,11 +1,9 @@
 import { describe, test, expect } from 'bun:test';
 import { generate } from '../generate';
 import { getContentEntries } from '../utils';
-import { Config } from '../lib';
 
 describe('built-in yarn commands', () => {
   const y2sdv = generate(
-    Config.test,
     `title: Main
       target: Data/Events/Saloon
       music: rain

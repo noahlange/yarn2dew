@@ -1,10 +1,8 @@
 import { describe, test, expect } from 'bun:test';
 import { generate } from '../generate';
 import { getContentEntries } from '../utils';
-import { Config } from '../lib';
 
 const res = generate(
-  Config.test,
   `
   title: Entry
   target: Data/Events/Saloon

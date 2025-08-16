@@ -1,10 +1,8 @@
 import { describe, test, expect } from 'bun:test';
 import { generate } from '../generate';
 import { getContentEntries, trim } from '../utils';
-import { Config } from '../lib';
 
 const y2sdv = generate(
-  Config.test,
   trim(`
     title: One
     target: Data/Events/Saloon

@@ -15,8 +15,8 @@ export class YarnToDew {
     return this.config.namespace;
   }
 
-  public async process(filename: string): Promise<void> {
-    const res = generate(this.config, filename);
+  public async process(text: string): Promise<void> {
+    const res = generate(text, this.config);
     this.patcher.add(res.filename ?? 'content.json', res.content);
     this.patcher.add('i18n/default.json', res.i18n);
   }
