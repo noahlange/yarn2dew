@@ -1,6 +1,6 @@
 import { Node } from './Node';
 
-import { Compiler, ScopeType } from '../lib';
+import { Compiler, ScopeType, type State } from '../lib';
 import { type AnyNode, CommandNode } from '.';
 
 export class RootNode extends Node {
@@ -31,11 +31,11 @@ export class RootNode extends Node {
     }
   }
 
-  public compile($: Compiler) {
+  public compile($: Compiler, state: State) {
     $.useScope(ScopeType.EVENT, this.meta.title, () => {
       this.addEventPause();
       for (const node of this.children) {
-        node.compile($);
+        node.compile($, state);
       }
       this.addEventPrelude($);
     });

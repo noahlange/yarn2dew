@@ -2,7 +2,7 @@ title: Adventure
 position: -227,-211
 start: 100,-100
 music: Cowboy_OVERWORLD
-location: AdventureGuild
+target: AdventureGuild
 ---
 // preconditions
 <<when Time 1900 2300>>

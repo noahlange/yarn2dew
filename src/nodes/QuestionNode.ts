@@ -1,5 +1,5 @@
 import yarn, { type NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
-import type { Parser, Compiler, ParseResult } from '../lib';
+import type { Parser, Compiler, ParseResult, State } from '../lib';
 import { stringifyTextNode } from '../utils';
 import { ResponseNode } from './ResponseNode';
 
@@ -28,7 +28,7 @@ export class QuestionNode {
     return { next: index + 1, value: new QuestionNode(nodeText, options) };
   }
 
-  public compile($: Compiler) {
+  public compile($: Compiler, state: State) {
     const i18n = (this.i18n ??= $.getI18nKey(this.text));
 
     // needed in order to get i18n keys
@@ -57,7 +57,7 @@ export class QuestionNode {
     }
 
     for (const r of this.responses) {
-      if (r.id) r.compile($);
+      if (r.id) r.compile($, state);
     }
   }
 

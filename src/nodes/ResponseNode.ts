@@ -1,5 +1,5 @@
 import { type AnyNode, CommandNode, JumpNode } from '.';
-import { Compiler, ScopeType } from '../lib';
+import { Compiler, ScopeType, type State } from '../lib';
 
 export class ResponseNode {
   public precompile($: Compiler) {
@@ -7,11 +7,11 @@ export class ResponseNode {
     this.id = this.content.find(c => c instanceof JumpNode)?.destination ?? null;
   }
 
-  public compile($: Compiler) {
+  public compile($: Compiler, state: State) {
     if (!this.id) throw new Error('Cannot compile response node without destination ID');
     $.useScope(ScopeType.EVENT, this.id, () => {
       for (const node of this.content) {
-        node.compile($);
+        node.compile($, state);
       }
     });
   }

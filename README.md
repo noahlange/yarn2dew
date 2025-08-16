@@ -56,13 +56,76 @@ Use the `when` command to add runtime constraints on when an event can run.
 <<when GameStateQuery !WEATHER Here Sun>>
 ```
 
+### Custom Commands & Macros
+
+You can write custom `commands` and `macros`, which expand to encompass multiple commands. These have low-level access to the compiler and a primitive event state. The functional distinction is mostly academic, but a macro allows you to explicitly indicate that something isn't built-in.
+
+These are registered in a `y2d.config.{ts,js}` file at the project root.
+
+```ts
+/**
+ * custom command, sets viewport state to 5, 5
+ * usage: <<viewport 5 5>>
+ */
+export function viewport($: Compiler, state: State, x: string, y: string) {
+  state.viewport = { x, y };
+  $.writeLine(`viewport ${x} ${y}`);
+}
+```
+
+```ts
+/**
+ * Macro: fade out to black, move the camera offscreen.
+ * <<$beginFade>>
+ */
+export function beginFade($: Compiler, state: State, time: string = '0.007', toContinue: string = 'false') {
+  state.beginFade = { time, toContinue };
+  $.writeLine(`globalFade ${time} ${toContinue != 'false'}`);
+  $.writeLine('viewport -100 -100');
+}
+
+/**
+ * Move back to original location, fade in from black.
+ * <<$endFade>>
+ */
+export function endFade($: Compiler, state: State) {
+  // reset viewport to its initial value
+  const { x, y } = state.viewport;
+  $.writeLine(`viewport ${x} ${y}`);
+  // copy params from the fade out
+  const { time = 0.007, toContinue = 'true' } = state.beginFade;
+  $.writeLine(`globalFadeToClear ${time} ${toContinue != 'false'}`);
+  // unset state
+  delete state.beginFade;
+}
+```
+
+Which allows this:
+
+```yarn
+<<$beginFade>>
+Foo: This is dialogue.
+<<$endFade>>
+```
+
+to be emitted as:
+
+```
+/globalFade
+/viewport -100 100
+/speak Foo "This is dialogue."
+/viewport 5 5
+/globalFadeToClear
+```
+
 ## Example
 
-```yarntitle: Adventure
+```yarn
+title: Adventure
 position: -227,-211
 start: 100,-100
 music: Cowboy_OVERWORLD
-location: AdventureGuild
+target: AdventureGuild
 ---
 // preconditions
 <<when Time 1900 2300>>
@@ -126,17 +189,19 @@ bun run dist    # creates an executable
                 # then updates ./i18n/default.json and ./content.json
 ```
 
+### Config
+
+Create a `y2d.config.ts` file in your working directory.
+
+```ts
+export default {
+  namespace: 'MyMod',
+  directory: '/foo/bar/baz',
+  macros: {},
+  commands: {}
+};
+```
+
 ![Done with Bun](./dun-with-bun.png)¹
 
 ¹ this project has not been endorsed by Bun
-
-# content patchinator
-
-```json
-{
-  "Changes": [
-    { "Action": "IncludeGlob", "FromFile": "**/*.yarn" },
-    { "Action": "Embed", "FromFile": "**/*.json" }
-  ]
-}
-```
