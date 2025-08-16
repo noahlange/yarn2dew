@@ -1,8 +1,8 @@
 import { YarnToDew } from './lib';
-import { getManifest, tryGetConfig } from './utils';
+import { Config } from './lib/Config';
 
-const moddir = process.cwd();
-const manifest = await getManifest(moddir);
-const config = await tryGetConfig(manifest.UniqueID, moddir);
-
+const config = await Config.load();
+console.log('\n✅ Config loaded.');
+await config.writeYSLS();
+console.log('🧶 Wrote Yarn Language Service config file.');
 await new YarnToDew(config).start();

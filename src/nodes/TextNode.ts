@@ -41,7 +41,6 @@ export class TextNode extends Node {
       if (value instanceof TextNode && speaker && value.speaker === speaker) {
         // add a break to the most recently-added chunk, then add the chunks from the next node.
         chunks.splice(chunks.length - 1, 1, `${text} #$b$# `, ...value.chunks);
-        console.log('???');
         return {
           next: returnIndex,
           value: new TextNode(chunks, speaker)

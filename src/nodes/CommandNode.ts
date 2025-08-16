@@ -4,9 +4,9 @@ import { type NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
 import { match, P } from 'ts-pattern';
 import { WhenNode } from './WhenNode';
 import { StartNode } from './StartNode';
+import { MacroNode } from './MacroNode';
 import { Node } from './Node';
 import { Compiler, Parser, type State } from '../lib';
-import { MacroNode, type AnyNode } from '.';
 
 type GenericCommandNode = InstanceType<typeof yarn.GenericCommandNode>;
 type StopCommandNode = InstanceType<typeof yarn.StopCommandNode>;

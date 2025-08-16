@@ -7,11 +7,14 @@ The SDV event format is not the easiest to work with. Yarn is easier to work wit
 ## Features
 
 - [x] Content Patcher-compatible output
+- [x] Yarn language service config generation
 - [x] branching dialogue
 - [x] ✨ automagical ✨ localization
 - [x] event conditions, game state queries
 - [x] consecutive dialogue inlining
+- [x] macros
 - [x] commands
+  - [x] custom commands
   - [x] arbitrary commands (e.g.,`<<move farmer 3 4>>`)
   - [x] literal commands (e.g., `<<$ jump farmer 8>>`)
   - [x] yarn built-ins
@@ -181,7 +184,7 @@ Marlon: We'll see how your grandpa feels about that!
 
 ## Tooling
 
-There's a very basic implementation of a watching content patcher. It may maul existing `content.json` files, so you'll _probably_ want to keep those in Git just in case.
+There's a very basic implementation of a watching content patcher. It ~~will~~ maul existing `content.json` files, so you'll _probably_ want to keep those in Git just in case.
 
 ```sh
 bun run dist    # creates an executable
@@ -204,4 +207,4 @@ export default {
 
 ![Done with Bun](./dun-with-bun.png)¹
 
-¹ this project has not been endorsed by Bun
+¹ this project has not been endorsed by Bun.

@@ -1,25 +1,22 @@
 import { watch } from 'fs/promises';
-import type { BuilderOutput, IncludeChange, Y2DConfig } from '../types';
+import type { IncludeChange } from '../types';
 import { Patcher } from './Patcher';
 import { join, normalize, resolve } from 'path';
 import { getContent } from '../utils';
 import { generate } from '../generate';
+import type { Config } from './Config';
 
 export class YarnToDew {
   private patcher = new Patcher();
   private selfChanges: Set<string> = new Set();
   private blacklist = new Set(['content.json', 'manifest.json']);
 
-  private get directory() {
-    return this.config.directory ?? process.cwd();
-  }
-
   public get namespace() {
     return this.config.namespace;
   }
 
-  public async process(filename: string): Promise<void> {
-    const res = generate(this.config, filename);
+  public async process(text: string): Promise<void> {
+    const res = generate(text, this.config);
     this.patcher.add(res.filename ?? 'content.json', res.content);
     this.patcher.add('i18n/default.json', res.i18n);
   }
@@ -31,7 +28,7 @@ export class YarnToDew {
   }
 
   private async reads() {
-    const watcher = watch(this.directory, { recursive: true });
+    const watcher = watch(this.config.directory, { recursive: true });
     for await (const event of watcher) {
       const normalized = normalize(event.filename!).toLowerCase();
       if (!normalized.endsWith('.yarn')) continue;
@@ -39,7 +36,7 @@ export class YarnToDew {
         this.selfChanges.delete(normalized);
       } else if (!this.blacklist.has(normalized)) {
         console.log(`🧶 detected ${event.eventType} in "${event.filename}"`);
-        this.process(await Bun.file(join(this.directory, event.filename!)).text());
+        this.process(await Bun.file(join(this.config.directory, event.filename!)).text());
       }
     }
   }
@@ -48,7 +45,7 @@ export class YarnToDew {
     for await (const [filename, data] of this.patcher.patches()) {
       console.log(`\t ✅ updated ${filename}`);
       this.selfChanges.add(normalize(filename).toLowerCase());
-      await Bun.write(filename, JSON.stringify(data, null, 2));
+      await Bun.write(filename, JSON.stringify(data, null, 2), { createPath: true });
     }
   }
 
@@ -59,7 +56,7 @@ export class YarnToDew {
   }
 
   private async preload() {
-    const { Changes = [] } = await getContent(this.directory);
+    const { Changes = [] } = await getContent(this.config.directory);
     await Promise.all(
       Changes.filter((c): c is IncludeChange => c.Action === 'Include')
         .flatMap(c => c.FromFile.split(','))
@@ -70,5 +67,5 @@ export class YarnToDew {
     );
   }
 
-  constructor(public config: Y2DConfig) {}
+  constructor(public config: Config) {}
 }

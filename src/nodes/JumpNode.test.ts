@@ -4,7 +4,6 @@ import { getContentEntries } from '../utils';
 
 describe('built-in yarn commands', () => {
   const y2sdv = generate(
-    { namespace: 'MyTest' },
     `title: Main
       target: Data/Events/Saloon
       music: rain
@@ -23,8 +22,8 @@ describe('built-in yarn commands', () => {
 
   const content = getContentEntries(y2sdv.content);
   test('jump targets are correctly emitted', () => {
-    expect(content).toContainKey('MyTest.Main');
-    expect(content).toContainKey('MyTest.Two');
-    expect(content['MyTest.Main']).toContain('switchEvent MyTest.Two');
+    expect(content).toContainKey('Y2D.Main');
+    expect(content).toContainKey('Y2D.Two');
+    expect(content['Y2D.Main']).toContain('switchEvent Y2D.Two');
   });
 });

@@ -3,7 +3,6 @@ import { generate } from '../generate';
 import { getContentEntries } from '../utils';
 
 const y2sdv = generate(
-  { namespace: 'MyTest' },
   `
     title: Main
     music: rain
@@ -26,11 +25,11 @@ describe('compiler', () => {
   const { content, i18n } = y2sdv;
 
   test('can compile basic content without exploding', () => {
-    expect(getContentEntries(content)).toContainAllKeys(['MyTest.Main', 'MyTest.Two']);
+    expect(getContentEntries(content)).toContainAllKeys(['Y2D.Main', 'Y2D.Two']);
   });
 
   test('automatically creates i18n entries and subs them in text', () => {
-    expect(i18n['MyTest.Two.01']).toBe('Hello? World?');
-    expect(i18n['MyTest.Two.02']).toBe('"This is an escaped line of dialogue."');
+    expect(i18n['Y2D.Two.01']).toBe('Hello? World?');
+    expect(i18n['Y2D.Two.02']).toBe('"This is an escaped line of dialogue."');
   });
 });
