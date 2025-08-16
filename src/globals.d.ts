@@ -318,12 +318,20 @@ declare module '@mnbroatch/bondage/src/parser/nodes.js' {
 declare module '@mnbroatch/bondage/src/index.js' {
   import type { NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
 
+  export type DocumentMeta = {
+    target: string;
+    title: string;
+    override?: boolean;
+    filename?: string;
+    entry?: boolean;
+  } & { [key: string]: string };
+
   class Runner {
     yarnNodes: Record<string, string>;
     load(text: string): void;
     getParserNodes(key: string): {
       parserNodes: NodeType[];
-      metadata: object;
+      metadata: DocumentMeta;
     };
   }
 

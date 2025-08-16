@@ -39,18 +39,12 @@ export class Compiler {
     return id;
   }
 
-  private log(...text: unknown[]) {
-    // console.log('\t'.repeat(this.stack.length), ...text);
-  }
-
   public useScope(type: ScopeType, name: string, cb: () => void) {
     if (this.scope.type !== ScopeType.NONE) {
       this.scope.content = this.buffer.slice();
     }
 
     this.buffer = [];
-    const typeName = ScopeType[type].toLowerCase();
-    this.log(`<${typeName}:${name}>`);
     this.stack.push(this.getNewScope(type, name));
     cb();
     // update this frame with any content the user's inserted
@@ -59,8 +53,6 @@ export class Compiler {
     this.stack.pop();
     // continue with content where the previous scope was suspended
     this.buffer = this.scope.content;
-
-    this.log(`</${typeName}:${name}>`);
   }
 
   public getID() {

@@ -1,5 +1,4 @@
-import yarn from '@mnbroatch/bondage/src/parser/nodes.js';
-import type { NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
+import yarn, { type NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
 import { Compiler, Parser, type ParseResult } from '../lib';
 import { Node } from './Node';
 import { QueryNode } from './QueryNode';
@@ -7,8 +6,9 @@ import { QueryNode } from './QueryNode';
 type GenericCommandNode = InstanceType<typeof yarn.GenericCommandNode>;
 
 export class WhenNode extends Node {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public static parse(parser: Parser, node: GenericCommandNode, nodes: NodeType[]): ParseResult<WhenNode> {
-    const [_when, name, ...args] = node.command[0].text.split(' ');
+    const [, name, ...args] = node.command[0].text.split(' ');
     return {
       next: -1,
       value:

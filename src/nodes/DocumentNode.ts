@@ -7,7 +7,8 @@ export type DocumentMeta = {
   title: string;
   override?: boolean;
   filename?: string;
-} & { [key: string]: string | number | boolean };
+  entry?: boolean;
+} & { [key: string]: string };
 
 export class DocumentNode extends Node {
   public compile($: Compiler, state: State) {

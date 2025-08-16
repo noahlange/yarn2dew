@@ -24,7 +24,7 @@ export class ResponseNode {
     public content: AnyNode[]
   ) {
     this.content.unshift(new CommandNode('pause', ['1']));
-    let trimmed = text.trim();
+    const trimmed = text.trim();
     if (trimmed.startsWith('i18n:')) {
       this.i18n = trimmed;
     } else {

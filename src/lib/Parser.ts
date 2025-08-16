@@ -37,7 +37,7 @@ export class Parser {
   }
 
   public process(ast: NodeType[], addTrailingEnd: boolean = false) {
-    let state: ParseResult<$.AnyNode | null> = { next: 0, value: null };
+    const state: ParseResult<$.AnyNode | null> = { next: 0, value: null };
     const nodes: $.AnyNode[] = [];
     while (state.next < ast.length) {
       const res = this.next(ast[state.next], ast);
@@ -75,7 +75,7 @@ export class Parser {
   public parse(text: string): $.DocumentNode {
     this.runner = new bondage.Runner();
     this.runner.load(text);
-    let meta: $.DocumentMeta = {} as $.DocumentMeta;
+    const meta: $.DocumentMeta = {} as $.DocumentMeta;
     return new $.DocumentNode(
       Object.keys(this.runner.yarnNodes).map(key => {
         const { parserNodes, metadata } = this.runner!.getParserNodes(key);

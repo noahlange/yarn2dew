@@ -1,7 +1,7 @@
 import { Node } from './Node';
 
 import { Compiler, ScopeType, type State } from '../lib';
-import { type AnyNode, CommandNode } from '.';
+import { type AnyNode, CommandNode, type DocumentMeta } from '.';
 
 export class RootNode extends Node {
   private getStart(): string {
@@ -26,7 +26,7 @@ export class RootNode extends Node {
   }
 
   private addEventPause() {
-    if (this.meta.entry === false) {
+    if (!this.meta.entry) {
       this.children.unshift(new CommandNode('pause', ['1']));
     }
   }
@@ -43,7 +43,7 @@ export class RootNode extends Node {
 
   constructor(
     public children: AnyNode[],
-    public meta: Record<string, any>
+    public meta: DocumentMeta
   ) {
     super();
   }
