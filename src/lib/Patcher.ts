@@ -1,4 +1,3 @@
-import path from 'path';
 import type { ChangeEntry, ContentJSON, I18N } from '../types';
 
 type Change = [string, I18N] | [string, ContentJSON];

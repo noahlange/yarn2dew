@@ -1,9 +1,10 @@
 import { describe, test, expect } from 'bun:test';
 import { generate } from '../generate';
 import { getContentEntries } from '../utils';
+import { Config } from '../lib';
 
 const res = generate(
-  { namespace: 'Test' },
+  Config.test,
   `
   title: Entry
   target: Data/Events/Saloon
@@ -20,14 +21,14 @@ const content = getContentEntries(res.content);
 
 describe('fade', () => {
   test('fades out', () => {
-    expect(content['Test.Entry']).toInclude('globalFade');
+    expect(content['Y2D.Entry']).toInclude('globalFade');
   });
 
   test('fades in', () => {
-    expect(content['Test.Entry']).toInclude('globalFadeToClear');
+    expect(content['Y2D.Entry']).toInclude('globalFadeToClear');
   });
 
   test('updates viewport', () => {
-    expect(content['Test.Entry']).toIncludeRepeated('viewport 5 6', 2);
+    expect(content['Y2D.Entry']).toIncludeRepeated('viewport 5 6', 2);
   });
 });

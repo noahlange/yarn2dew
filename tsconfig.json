@@ -4,7 +4,10 @@
     "target": "esnext",
     "moduleResolution": "bundler",
     "strict": true,
+    "resolveJsonModule": true,
     "verbatimModuleSyntax": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true
   }
 }

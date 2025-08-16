@@ -1,4 +1,4 @@
-import type { BuilderOutput, ContentJSON, I18N } from '../types';
+import type { BuilderOutput, I18N } from '../types';
 import { getContentPatch } from '../utils';
 import { ScopeType, type Scope } from './Compiler';
 

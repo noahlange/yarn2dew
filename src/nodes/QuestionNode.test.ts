@@ -1,5 +1,6 @@
 import { describe, test, expect } from 'bun:test';
 import { generate } from '../generate';
+import { Config } from '../lib';
 
 const header = `
 title: Adventure
@@ -24,10 +25,10 @@ Marlon: Whaddya say?
 
 describe('QuestionNode', () => {
   test("messages before questions don't cause explosions", () => {
-    expect(() => generate({ namespace: 'MyTest' }, `${header}---${message}===`)).not.toThrow();
+    expect(() => generate(Config.test, `${header}---${message}===`)).not.toThrow();
   });
 
   test("speak before questions don't cause explosions", () => {
-    expect(() => generate({ namespace: 'MyTest' }, `${header}---${speak}===`)).not.toThrow();
+    expect(() => generate(Config.test, `${header}---${speak}===`)).not.toThrow();
   });
 });

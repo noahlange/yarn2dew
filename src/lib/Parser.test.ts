@@ -1,9 +1,10 @@
 import { describe, test, expect } from 'bun:test';
 import { generate } from '../generate';
 import { getContentEntries } from '../utils';
+import { Config } from './Config';
 
 const y2sdv = generate(
-  { namespace: 'MyTest' },
+  Config.test,
   `
     title: Main
     music: rain
@@ -36,14 +37,14 @@ describe('automatic end insertion', () => {
   const c = getContentEntries(y2sdv.content);
 
   test('...inserts trailing <<end>>s for terminating nodes', () => {
-    for (const node of ['MyTest.Two', 'MyTest.Four']) {
+    for (const node of ['Y2D.Two', 'Y2D.Four']) {
       const commands = c[node]?.split('/');
       expect(commands.at(-1)).toBe('end');
     }
   });
 
   test('...not for every node', () => {
-    for (const node of ['MyTest.Main', 'MyTest.Three']) {
+    for (const node of ['Y2D.Main', 'Y2D.Three']) {
       const commands = c[node]?.split('/');
       expect(commands.at(-1)).not.toBe('end');
     }

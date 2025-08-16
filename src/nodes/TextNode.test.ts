@@ -1,9 +1,10 @@
 import { test, expect, describe } from 'bun:test';
 import { generate } from '../generate';
 import { getContentEntries } from '../utils';
+import { Config } from '../lib';
 
 const y2sdv = generate(
-  { namespace: 'MyTest' },
+  Config.test,
   `
     title: Main
     target: Data/Events/Trailer
@@ -17,11 +18,11 @@ const y2sdv = generate(
 );
 
 const content = getContentEntries(y2sdv.content);
-const node = content['MyTest.Main'];
+const node = content['Y2D.Main'];
 
 describe('TextNode', () => {
   test("plaintext is i18n'd", () => {
-    expect(node).toContain('{{i18n:MyTest.Main.02');
+    expect(node).toContain('{{i18n:Y2D.Main.02');
   });
 
   test("i18n'd text is untouched", () => {
@@ -29,7 +30,7 @@ describe('TextNode', () => {
   });
 
   test('inline string literals are emitted verbatim', () => {
-    expect(y2sdv.i18n['MyTest.Main.01']).toInclude('#$b#');
+    expect(y2sdv.i18n['Y2D.Main.01']).toInclude('#$b#');
   });
 
   test('consecutive lines of dialogue are inlined', () => {
@@ -37,11 +38,11 @@ describe('TextNode', () => {
   });
 
   test('substitution tokens are emitted verbatim', () => {
-    expect(y2sdv.i18n['MyTest.Main.02']).toBe('This is {{WEATHER}} text!');
+    expect(y2sdv.i18n['Y2D.Main.02']).toBe('This is {{WEATHER}} text!');
   });
 });
 
 test('message nodes', () => {
-  expect(node).toContain('message "{{i18n:MyTest.Main.03}}"');
-  expect(y2sdv.i18n['MyTest.Main.03']).toBe('Goodbye, cruel world!');
+  expect(node).toContain('message "{{i18n:Y2D.Main.03}}"');
+  expect(y2sdv.i18n['Y2D.Main.03']).toBe('Goodbye, cruel world!');
 });
