@@ -6,9 +6,9 @@ const y2sdv = generate(
   'MyTest',
   `
     title: Main
-    location: Saloon
     music: rain
     start: -100,-100
+    target: Data/Events/Saloon
     ---
     <<start Foobar 1 2 3>>
     Foobar: Hello, world!
@@ -16,8 +16,8 @@ const y2sdv = generate(
           
     title: Two
     ---
-    Hello, world!
-    Foobar: This is a quotable line of dialogue.
+    Hello? World?
+    Foobar: "This is an escaped line of dialogue."
     ===
   `
 );
@@ -30,7 +30,7 @@ describe('compiler', () => {
   });
 
   test('automatically creates i18n entries and subs them in text', () => {
-    expect(i18n['MyTest.Two.01']).toBe('Hello, world!');
-    expect(i18n['MyTest.Two.02']).toBe('"This is a quotable line of dialogue."');
+    expect(i18n['MyTest.Two.01']).toBe('Hello? World?');
+    expect(i18n['MyTest.Two.02']).toBe('"This is an escaped line of dialogue."');
   });
 });

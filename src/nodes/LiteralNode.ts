@@ -1,22 +1,24 @@
-import { match } from 'ts-pattern';
+import { match, P } from 'ts-pattern';
 import type { Parser, Compiler, ParseResult } from '../lib';
 import { Node } from './Node';
-import { type NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
+import yarn, { type NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
 
 export class LiteralNode extends Node {
   public static parse(parser: Parser, node: NodeType, nodes: NodeType[]): ParseResult<LiteralNode> {
     let index = nodes.indexOf(node);
     return match(node)
-      .with({ type: 'InlineExpressionNode' }, node => LiteralNode.parse(parser, node.expression as NodeType, []))
-      .with({ type: 'StringLiteralNode' }, node => ({
+      .with(P.instanceOf(yarn.InlineExpressionNode), node => {
+        return LiteralNode.parse(parser, node.expression as NodeType, []);
+      })
+      .with(P.instanceOf(yarn.StringLiteralNode), node => ({
         next: index + 1,
         value: new LiteralNode(node.stringLiteral.toString())
       }))
-      .with({ type: 'BooleanLiteralNode' }, node => ({
+      .with(P.instanceOf(yarn.BooleanLiteralNode), node => ({
         next: index + 1,
         value: new LiteralNode(node.booleanLiteral.toString())
       }))
-      .with({ type: 'NumericLiteralNode' }, node => ({
+      .with(P.instanceOf(yarn.NumericLiteralNode), node => ({
         next: index + 1,
         value: new LiteralNode(node.numericLiteral.toString())
       }))
@@ -25,7 +27,9 @@ export class LiteralNode extends Node {
       });
   }
 
-  public readonly type = 'LiteralNode';
+  public toString() {
+    return this.value.toString();
+  }
 
   public compile($: Compiler) {
     $.write(this.value);

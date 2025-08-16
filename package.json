@@ -4,7 +4,8 @@
   "description": "Compiles Yarn dialogue to Stardew Valley event format.",
   "devDependencies": {
     "@types/bun": "^1.2.19",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "prettier": "^3.6.2"
   },
   "dependencies": {
     "@mnbroatch/bondage": "^4.2.4",
@@ -14,6 +15,6 @@
     "dist": "bun build ./src/task.ts --outfile yarn2dew --compile",
     "dev:types": "tsc --noEmit",
     "dev:pretty": "prettier --write 'src/**/*.ts'",
-    "check": "bun test && bun run dev:types && bun run dev:pretty"
+    "check": "bun run dev:pretty && bun run dev:types && bun test"
   }
 }

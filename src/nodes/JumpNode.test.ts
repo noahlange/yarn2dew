@@ -6,7 +6,7 @@ describe('built-in yarn commands', () => {
   const y2sdv = generate(
     'MyTest',
     `title: Main
-      location: Saloon
+      target: Data/Events/Saloon
       music: rain
       ---
       This is a thing

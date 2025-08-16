@@ -4,13 +4,18 @@ start: 100,-100
 music: Cowboy_OVERWORLD
 location: AdventureGuild
 ---
+// preconditions
+<<when Time 1900 2300>>
+<<when Friendship Marlon 750>>
+<<when {MineLowestLevelReached(50)}>>
+
+// positioning data
 <<start farmer 4 15 0>>
 <<start Marlon 4 11 2>>
 <<changeLocation AdventureGuild>>
 <<viewport 4 11>>
 <<move farmer 0 -2 0>>
-
-Marlon: You're going on an adventure!
+Marlon: You're obligated to go on an adventure this {"{{Season}}"}!
 Whaddya say?
 -> Neat-o!
   Marlon: Have you ever been on an adventure before?
@@ -32,8 +37,11 @@ Marlon regales you with tales of adventure and derring-do, bereft of any educati
 title: AdventureStart
 position: 63,12
 ---
+// these are inlined and separated with a "#$b#"
 Marlon: Then get out there, adventurer! $h
-<<end>>
+Marlon: Ah, yes—before I forget, here's some spending money.
+<<action AddMoney 1>>
+// <<end>> is inserted automatically
 ===
 
 title: AdventureFail
@@ -41,5 +49,5 @@ position: -215,31
 ---
 Marlon: *Hmph.* $a
 Marlon: We'll see how your grandpa feels about that!
-<<end>>
+// <<end>> is inserted automatically
 ===

@@ -21,6 +21,7 @@ declare module '@mnbroatch/bondage/src/parser/nodes.js' {
   }
 
   abstract class UnaryExpression extends Expression {
+    public expression: Expression;
     public constructor(expression: Expression);
   }
 
@@ -48,15 +49,15 @@ declare module '@mnbroatch/bondage/src/parser/nodes.js' {
   class IfNode extends Conditional {
     public readonly type = 'IfNode';
     public expression: Expression;
-    public statement: OfOrArrayOf<NodeType>;
-    public constructor(expression: Expression, statement: OfOrArrayOf<NodeType>);
+    public statement: NodeType[];
+    public constructor(expression: Expression, statement: NodeType[]);
   }
 
   class IfElseNode extends Conditional {
     public readonly type = 'IfElseNode';
 
     public expression: Expression;
-    public statement: unknown;
+    public statement: unknown[];
     public elseStatement: ElseNode;
 
     constructor(expression: Expression, statement: unknown, elseStatement: unknown);
@@ -72,7 +73,7 @@ declare module '@mnbroatch/bondage/src/parser/nodes.js' {
     public readonly type = 'ElseIfNode';
 
     public expression: Expression;
-    public statement: unknown;
+    public statement: unknown[];
     public elseStatement: ElseNode;
 
     constructor(expression: Expression, statement: unknown, elseStatement: unknown);
@@ -308,6 +309,7 @@ declare module '@mnbroatch/bondage/src/parser/nodes.js' {
     | LessThanOrEqualToExpressionNode
     | SetVariableEqualToNode
     | FunctionCallNode
+    | Expression
     | InlineExpressionNode;
 
   export default value;

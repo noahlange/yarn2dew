@@ -1,4 +1,6 @@
 import { YarnToDew } from './lib';
+import { getManifest } from './utils';
 
 const moddir = process.cwd();
-await new YarnToDew(moddir).start();
+const manifest = await getManifest(moddir);
+await new YarnToDew(manifest, moddir).start();

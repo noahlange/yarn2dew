@@ -1,12 +1,11 @@
 import yarn, { type NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
 import type { Parser, Compiler, ParseResult } from '../lib';
-import { TextNode } from './TextNode';
 import { stringifyTextNode } from '../utils';
 import { ResponseNode } from './ResponseNode';
 
 type DialogShortcutNode = InstanceType<typeof yarn.DialogShortcutNode>;
 
-export class QuestionNode implements TextNode {
+export class QuestionNode {
   public static parse(
     parser: Parser,
     node: InstanceType<typeof yarn.TextNode>,
@@ -22,36 +21,44 @@ export class QuestionNode implements TextNode {
 
     while (nodes[index + 1] instanceof yarn.DialogShortcutNode) {
       const { content, text } = nodes[index + 1] as DialogShortcutNode;
-      options.push(new ResponseNode(stringifyTextNode(text), parser.process(content)));
-      index++;
+      const response = new ResponseNode(stringifyTextNode(text), parser.process(content ?? []));
+      (options.push(response), index++);
     }
 
-    return {
-      next: index + 1,
-      value: new QuestionNode(nodeText, options)
-    };
+    return { next: index + 1, value: new QuestionNode(nodeText, options) };
   }
-
-  public readonly type = 'QuestionNode';
 
   public compile($: Compiler) {
     const i18n = (this.i18n ??= $.getI18nKey(this.text));
 
-    for (const r of this.responses) {
-      // needed in order to get i18n keys
-      r.precompile($);
-    }
+    // needed in order to get i18n keys
+    for (const r of this.responses) r.precompile($);
 
-    $.write(`/quickQuestion {{${i18n}}}#`);
+    let quick = false;
+
+    $.write(quick ? `/question null {{${i18n}}}#` : `/quickQuestion {{${i18n}}}#`);
+
     $.write(
       `${this.responses
         .filter(r => r instanceof ResponseNode)
         .map(r => `{{${r.i18n}}}`)
         .join('#')}`
     );
+
     $.write('(break)');
-    $.write(`${this.responses.map(r => `switchEvent "${$.namespace}.${r.id}"`).join('(break)')}`);
-    for (const r of this.responses) r.compile($);
+
+    for (const response of this.responses) {
+      if (response.id) {
+        $.writeLine(`switchEvent "${$.namespace}.${response.id}"`);
+      } else {
+        $.writeLine('pause 1');
+      }
+      $.write(' (break)');
+    }
+
+    for (const r of this.responses) {
+      if (r.id) r.compile($);
+    }
   }
 
   public i18n: string | null = null;
@@ -64,7 +71,7 @@ export class QuestionNode implements TextNode {
     if (trimmed.startsWith('i18n:')) {
       this.i18n = trimmed;
     } else {
-      this.text = `"${trimmed}"`;
+      this.text = trimmed;
     }
   }
 }

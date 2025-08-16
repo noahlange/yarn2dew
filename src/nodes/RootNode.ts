@@ -4,8 +4,6 @@ import { Compiler, ScopeType } from '../lib';
 import { type AnyNode, CommandNode } from '.';
 
 export class RootNode extends Node {
-  public readonly type = 'RootNode';
-
   private getStart(): string {
     if (this.meta.start) {
       return (this.meta.start.split(',') as string[]).map(v => v.trim()).join(' ');
