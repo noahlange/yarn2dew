@@ -24,10 +24,10 @@ Marlon: Whaddya say?
 
 describe('QuestionNode', () => {
   test("messages before questions don't cause explosions", () => {
-    expect(() => generate('MyTest', `${header}---${message}===`)).not.toThrow();
+    expect(() => generate({ namespace: 'MyTest' }, `${header}---${message}===`)).not.toThrow();
   });
 
   test("speak before questions don't cause explosions", () => {
-    expect(() => generate('MyTest', `${header}---${speak}===`)).not.toThrow();
+    expect(() => generate({ namespace: 'MyTest' }, `${header}---${speak}===`)).not.toThrow();
   });
 });

@@ -3,7 +3,7 @@ import { generate } from '../generate';
 import { getContentEntries } from '../utils';
 
 const y2sdv = generate(
-  'MyTest',
+  { namespace: 'MyTest' },
   `
     title: Main
     target: Data/Events/Saloon

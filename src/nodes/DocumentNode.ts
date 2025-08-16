@@ -1,4 +1,4 @@
-import type { Compiler } from '../lib';
+import type { Compiler, State } from '../lib';
 import { Node } from './Node';
 import { RootNode } from './RootNode';
 
@@ -10,10 +10,10 @@ export type DocumentMeta = {
 } & { [key: string]: string | number | boolean };
 
 export class DocumentNode extends Node {
-  public compile($: Compiler) {
+  public compile($: Compiler, state: State) {
     this.roots.forEach((node, i) => {
       node.meta.entry = i === 0;
-      node.compile($);
+      node.compile($, state);
     });
   }
 

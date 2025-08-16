@@ -1,6 +1,8 @@
 import yarn from '@mnbroatch/bondage/src/parser/nodes.js';
-import type { ChangeEntry, ContentJSON, ContentPatcherManifest } from './types';
+import type { ChangeEntry, ContentJSON, ContentPatcherManifest, Y2DConfig } from './types';
 import { join } from 'path';
+import macros from './macros';
+import commands from './commands';
 
 export function getExpressionValue(expression: InstanceType<typeof yarn.InlineExpressionNode>): string {
   return 'stringLiteral' in expression.expression ? (expression.expression.stringLiteral as string) : '';
@@ -39,4 +41,25 @@ export function toScreamingSnakeCase(str: string) {
     .split(/\.?(?=[A-Z])/)
     .join('_')
     .toUpperCase();
+}
+
+export async function tryGetConfig(namespace: string, directory: string): Promise<Y2DConfig> {
+  const filenames = [`y2d.config.ts`, `y2d.config.js`];
+  const res = { namespace, directory, macros: Object.assign({}, macros), commands: Object.assign({}, commands) };
+  for (const name of filenames) {
+    try {
+      const mod = await import(join(directory, name));
+      if (!mod.default) throw new Error('no default export');
+      const { commands, macros } = mod.default;
+      return {
+        ...res,
+        namespace: 'Y2D',
+        macros: Object.assign(res.macros, macros),
+        commands: Object.assign(res.commands, commands)
+      };
+    } catch {
+      // no-op
+    }
+  }
+  return res;
 }

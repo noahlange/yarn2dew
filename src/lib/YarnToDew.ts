@@ -1,5 +1,5 @@
 import { watch } from 'fs/promises';
-import type { BuilderOutput, ContentPatcherManifest, IncludeChange } from '../types';
+import type { BuilderOutput, IncludeChange, Y2DConfig } from '../types';
 import { Patcher } from './Patcher';
 import { join, normalize, resolve } from 'path';
 import { getContent } from '../utils';
@@ -8,7 +8,14 @@ export class YarnToDew {
   private patcher = new Patcher();
   private selfChanges: Set<string> = new Set();
   private blacklist = new Set(['content.json', 'manifest.json']);
-  private namespace!: string;
+
+  private get directory() {
+    return this.config.directory ?? process.cwd();
+  }
+
+  public get namespace() {
+    return this.config.namespace;
+  }
 
   public async process(filename: string): Promise<void> {
     const res = await new Promise<BuilderOutput>((resolve, reject) => {
@@ -67,10 +74,5 @@ export class YarnToDew {
     );
   }
 
-  constructor(
-    public manifest: ContentPatcherManifest,
-    public directory: string
-  ) {
-    this.namespace = manifest.UniqueID;
-  }
+  constructor(public config: Y2DConfig) {}
 }

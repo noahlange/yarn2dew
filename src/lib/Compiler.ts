@@ -1,11 +1,18 @@
 import { match } from 'ts-pattern';
 import { DocumentNode } from '../nodes';
 import { Builder } from './Builder';
+import type { Y2DConfig, Y2DPartialConfig } from '../types';
+import commands from '../commands';
+import macros from '../macros';
 
 export enum ScopeType {
   NONE,
   EVENT
 }
+
+export type State = Record<string, string | Record<string, string>>;
+
+export type Macro = ($: Compiler, state: State, ...args: string[]) => void;
 
 export interface Scope {
   id: number;
@@ -14,12 +21,11 @@ export interface Scope {
   name: string | null;
   content: string[];
   count: number;
-  state: Partial<Record<ScopeType, string>>;
 }
 
 export class Compiler {
-  public static compile(namespace: string, node: DocumentNode) {
-    const compiler = new Compiler(namespace, node);
+  public static compile(config: Y2DPartialConfig, node: DocumentNode) {
+    const compiler = new Compiler(config, node);
     compiler.compile();
     return compiler;
   }
@@ -33,12 +39,8 @@ export class Compiler {
   }
 
   private getNewScope(type: ScopeType, name: string | null = null): number {
-    const state = this.stack
-      .map(s => this.frames[s])
-      .filter(s => s.type !== ScopeType.NONE)
-      .reduce((a, b) => ({ ...a, [b.type]: b.name }), {});
     const id = ++this.scopeID;
-    this.frames[id] = { id, type, name, content: [], prereq: {}, state, count: 0 };
+    this.frames[id] = { id, type, name, content: [], prereq: {}, count: 0 };
     return id;
   }
 
@@ -88,6 +90,13 @@ export class Compiler {
   private buffer: string[] = [];
   private frames: Record<number, Scope> = {};
   private stack: number[] = [];
+  public config: Y2DConfig;
+
+  public get namespace() {
+    return this.config.namespace;
+  }
+
+  private state: State = {};
 
   public get scope() {
     const id = this.stack.at(-1)!;
@@ -122,13 +131,14 @@ export class Compiler {
   }
 
   public compile() {
-    this.doc.compile(this);
+    this.doc.compile(this, this.state);
   }
 
   private constructor(
-    public namespace: string,
+    config: Y2DPartialConfig,
     private doc: DocumentNode
   ) {
+    this.config = { macros, commands, directory: process.cwd(), ...config };
     this.stack = [this.getNewScope(ScopeType.NONE)];
     this.buffer = [];
   }

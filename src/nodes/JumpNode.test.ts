@@ -4,7 +4,7 @@ import { getContentEntries } from '../utils';
 
 describe('built-in yarn commands', () => {
   const y2sdv = generate(
-    'MyTest',
+    { namespace: 'MyTest' },
     `title: Main
       target: Data/Events/Saloon
       music: rain

@@ -1,3 +1,5 @@
+import type { Macro } from './lib';
+
 export interface ChangeEntry {
   LogName?: string;
   Action: string;
@@ -37,4 +39,18 @@ export interface ContentPatcherManifest {
   UpdateKeys: string[];
   ContentPackFor?: { UniqueID: string };
   Dependencies: ContentPatcherDependency[];
+}
+
+export interface Y2DPartialConfig {
+  namespace: string;
+  directory?: string;
+  macros?: Record<string, Macro>;
+  commands?: Record<string, Macro>;
+}
+
+export interface Y2DConfig {
+  namespace: string;
+  directory: string;
+  macros: Record<string, Macro>;
+  commands: Record<string, Macro>;
 }
