@@ -35,14 +35,14 @@ const y2sdv = generate(
 describe('automatic end insertion', () => {
   const c = getContentEntries(y2sdv.content);
 
-  test('automatically inserts end commands at the end of terminating nodes', () => {
+  test('...inserts trailing <<end>>s for terminating nodes', () => {
     for (const node of ['MyTest.Two', 'MyTest.Four']) {
       const commands = c[node]?.split('/');
       expect(commands.at(-1)).toBe('end');
     }
   });
 
-  test('...but not at every node', () => {
+  test('...not for every node', () => {
     for (const node of ['MyTest.Main', 'MyTest.Three']) {
       const commands = c[node]?.split('/');
       expect(commands.at(-1)).not.toBe('end');

@@ -9,28 +9,31 @@ const y2sdv = generate(
     target: Data/Events/Trailer
     ---
     Bar: Hello, world! {"#$b#"} This is text!
-    Bar: This is more text!
+    Bar: This is {"{{WEATHER}}"} text!
     Goodbye, cruel world!
     Bar: {"i18n:123456"}
-    ===`
+    ===
+  `
 );
 
 const content = getContentEntries(y2sdv.content);
 const node = content['MyTest.Main'];
 
-console.log(y2sdv.i18n);
-
 describe('TextNode', () => {
-  test('inline string literals are emitted verbatim', () => {
-    expect(y2sdv.i18n['MyTest.Main.01']).toBe('Hello, world! #$b# This is text!');
-  });
-
   test("plaintext is i18n'd", () => {
-    expect(node).not.toContain('speak Bar "This is more text!"');
+    expect(node).toContain('{{i18n:MyTest.Main.02');
   });
 
   test("i18n'd text is untouched", () => {
     expect(node).toContain('speak Bar "{{i18n:123456}}"');
+  });
+
+  test('inline string literals are emitted verbatim', () => {
+    expect(y2sdv.i18n['MyTest.Main.01']).toBe('Hello, world! #$b# This is text!');
+  });
+
+  test('substitution tokens are emitted verbatim', () => {
+    expect(y2sdv.i18n['MyTest.Main.02']).toBe('This is {{WEATHER}} text!');
   });
 });
 

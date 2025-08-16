@@ -15,7 +15,7 @@ location: AdventureGuild
 <<changeLocation AdventureGuild>>
 <<viewport 4 11>>
 <<move farmer 0 -2 0>>
-Marlon: You're going on an adventure!
+Marlon: You're going on an adventure this {"{{Season}}"}!
 Whaddya say?
 -> Neat-o!
   Marlon: Have you ever been on an adventure before?

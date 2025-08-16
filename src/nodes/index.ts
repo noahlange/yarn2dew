@@ -8,7 +8,6 @@ import { DocumentNode } from './DocumentNode';
 import { WhenNode } from './WhenNode';
 import { StartNode } from './StartNode';
 import { ResponseNode } from './ResponseNode';
-import { SpeakNode } from './SpeakNode';
 import { QuestionNode } from './QuestionNode';
 
 export type AnyNode =
@@ -16,7 +15,6 @@ export type AnyNode =
   | DocumentNode
   | RootNode
   | LiteralNode
-  | SpeakNode
   | TextNode
   | QuestionNode
   | ResponseNode
@@ -28,7 +26,6 @@ export {
   CommandNode,
   LiteralNode,
   TextNode,
-  SpeakNode,
   JumpNode,
   RootNode,
   DocumentNode,

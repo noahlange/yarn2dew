@@ -1,18 +1,16 @@
 import yarn, { type NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
 
-import { Parser, type ParseResult } from '../lib';
+import { Compiler, Parser, type ParseResult } from '../lib';
 import { Node } from './Node';
 import { LiteralNode } from './LiteralNode';
 import { QuestionNode } from './QuestionNode';
-import { MessageNode } from './MessageNode';
-import { SpeakNode } from './SpeakNode';
 
-export abstract class TextNode extends Node {
+export class TextNode extends Node {
   public static parse(
     parser: Parser,
     node: InstanceType<typeof yarn.TextNode>,
     nodes: NodeType[]
-  ): ParseResult<SpeakNode | MessageNode | LiteralNode | QuestionNode> {
+  ): ParseResult<TextNode | LiteralNode | QuestionNode> {
     let nodeText = node.text;
     let [rawName, rawText = null] = nodeText.split(':');
     let speaker = rawText ? rawName : null;
@@ -46,6 +44,31 @@ export abstract class TextNode extends Node {
       throw new Error('no chunks for node???');
     }
 
-    return { next: nextIndex, value: new SpeakNode(chunks, speaker) };
+    return { next: nextIndex, value: new TextNode(chunks, speaker) };
+  }
+
+  public compile($: Compiler) {
+    if (this.speaker) {
+      $.writeLine(`speak ${this.speaker} "`);
+      $.write(
+        this.chunks
+          .map(chunk => (chunk.startsWith('i18n:') ? chunk : $.getI18nKey(chunk)))
+          .map(v => `{{${v}}}`)
+          .join(' ')
+      );
+      $.write('"');
+    } else {
+      for (const chunk of this.chunks) {
+        const i18n = chunk.startsWith('i18n:') ? chunk : $.getI18nKey(chunk);
+        $.writeLine(`message "{{${i18n}}}"`);
+      }
+    }
+  }
+
+  public constructor(
+    public chunks: string[] = [],
+    public speaker: string | null = null
+  ) {
+    super();
   }
 }

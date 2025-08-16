@@ -39,5 +39,3 @@ export function toScreamingSnakeCase(str: string) {
     .join('_')
     .toUpperCase();
 }
-
-export function escapeDialogue(text: string): string {}
