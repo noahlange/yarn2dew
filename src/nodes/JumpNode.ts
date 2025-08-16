@@ -4,7 +4,11 @@ import { Node } from './Node';
 import { Compiler, Parser } from '../lib';
 
 export class JumpNode extends Node {
-  public static parse(parser: Parser, node: InstanceType<typeof yarn.JumpCommandNode>, nodes: NodeType[]) {
+  public static parse(
+    parser: Parser,
+    node: InstanceType<typeof yarn.JumpCommandNode>,
+    nodes: NodeType[]
+  ) {
     return {
       next: nodes.indexOf(node) + 1,
       value: new JumpNode(node.destination)

@@ -2,8 +2,12 @@ import yarn from '@mnbroatch/bondage/src/parser/nodes.js';
 import type { ChangeEntry, ContentJSON, ContentPatcherManifest } from './types';
 import { join } from 'path';
 
-export function getExpressionValue(expression: InstanceType<typeof yarn.InlineExpressionNode>): string {
-  return 'stringLiteral' in expression.expression ? (expression.expression.stringLiteral as string) : '';
+export function getExpressionValue(
+  expression: InstanceType<typeof yarn.InlineExpressionNode>
+): string {
+  return 'stringLiteral' in expression.expression
+    ? (expression.expression.stringLiteral as string)
+    : '';
 }
 
 export function stringifyTextNode(node: OfOrArrayOf<InstanceType<typeof yarn.TextNode>>) {

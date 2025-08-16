@@ -4,7 +4,11 @@ import { Node } from './Node';
 import yarn, { type NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
 
 export class LiteralNode extends Node {
-  public static parse(parser: Parser, node: NodeType, nodes: NodeType[]): ParseResult<LiteralNode> {
+  public static parse(
+    parser: Parser,
+    node: NodeType,
+    nodes: NodeType[]
+  ): ParseResult<LiteralNode> {
     const index = nodes.indexOf(node);
     return match(node)
       .with(P.instanceOf(yarn.InlineExpressionNode), node => {

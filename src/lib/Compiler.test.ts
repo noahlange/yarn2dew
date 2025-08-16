@@ -5,8 +5,6 @@ import { getContentEntries } from '../utils';
 const y2sdv = generate(
   `
     title: Main
-    music: rain
-    start: -100,-100
     target: Data/Events/Saloon
     ---
     <<start Foobar 1 2 3>>

@@ -292,7 +292,9 @@ export const functions: YSLSFunction[] = [
     DefinitionName: 'DayOfMonth',
     ReturnType: 'bool',
     Language: 'text',
-    Parameters: [{ Name: 'Day', Type: 'number', Documentation: '1-indexed.', IsParamsArray: true }]
+    Parameters: [
+      { Name: 'Day', Type: 'number', Documentation: '1-indexed.', IsParamsArray: true }
+    ]
   },
   {
     YarnName: 'DaysPlayed',

@@ -20,15 +20,6 @@ export interface Y2DConfig {
 }
 
 export class Config {
-  private static getFns(config: Record<string, Macro | MacroWithYSLS> = {}): Record<string, Macro> {
-    const fns: Record<string, Macro> = {};
-    for (const key in config) {
-      const m = config[key];
-      fns[key] = typeof m === 'function' ? m : m.default;
-    }
-    return fns;
-  }
-
   /**
    * Returns a basic test config.
    */
@@ -48,8 +39,8 @@ export class Config {
           {
             directory,
             ...mod.default,
-            macros: { ...macros, ...this.getFns(mod.default.macros) },
-            commands: { ...commands, ...this.getFns(mod.default.commands) }
+            macros: { ...macros, ...(mod.default.macros ?? {}) },
+            commands: { ...commands, ...(mod.default.commands ?? {}) }
           },
           getYSLS(mod.default)
         );

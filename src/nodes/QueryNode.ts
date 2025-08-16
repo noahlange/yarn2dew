@@ -6,7 +6,11 @@ import { LiteralNode } from './LiteralNode';
 import { toScreamingSnakeCase } from '../utils';
 
 export class QueryNode extends Node {
-  public static parse(parser: Parser, node: NodeType, nodes: NodeType[]): ParseResult<QueryNode> {
+  public static parse(
+    parser: Parser,
+    node: NodeType,
+    nodes: NodeType[]
+  ): ParseResult<QueryNode> {
     let negated = false;
     if (node instanceof yarn.InlineExpressionNode) {
       node = node.expression;
@@ -27,7 +31,9 @@ export class QueryNode extends Node {
           )
       )
       .otherwise(node => {
-        throw new Error(`expected function call node in query, got ${'type' in node ? node.type : '???'}`);
+        throw new Error(
+          `expected function call node in query, got ${'type' in node ? node.type : '???'}`
+        );
       });
 
     return { value, next: nodes.indexOf(node) + 1 };

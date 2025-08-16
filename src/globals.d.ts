@@ -215,7 +215,12 @@ declare module '@mnbroatch/bondage/src/parser/nodes.js' {
     public args: Literal[];
     public lineNum: number;
     public hashtags: string[];
-    public constructor(functionName: string, args: string[], lineNo: LineNo, hashtags?: string[]);
+    public constructor(
+      functionName: string,
+      args: string[],
+      lineNo: LineNo,
+      hashtags?: string[]
+    );
   }
 
   class InlineExpressionNode extends Expression {

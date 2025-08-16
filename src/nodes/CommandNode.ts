@@ -12,7 +12,11 @@ type GenericCommandNode = InstanceType<typeof yarn.GenericCommandNode>;
 type StopCommandNode = InstanceType<typeof yarn.StopCommandNode>;
 
 export class CommandNode extends Node {
-  public static parse(parser: Parser, node: GenericCommandNode | StopCommandNode, nodes: NodeType[]) {
+  public static parse(
+    parser: Parser,
+    node: GenericCommandNode | StopCommandNode,
+    nodes: NodeType[]
+  ) {
     const index = nodes.indexOf(node);
 
     const [name, ...args] = match(node)

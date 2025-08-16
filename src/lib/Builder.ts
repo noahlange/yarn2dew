@@ -44,7 +44,9 @@ export class Builder {
       .map(([k, v]) => `${k} ${v}`)
       .join('/');
 
-    return prereq ? `${this.options.namespace}.${content.name}/${prereq}` : `${this.options.namespace}.${content.name}`;
+    return prereq
+      ? `${this.options.namespace}.${content.name}/${prereq}`
+      : `${this.options.namespace}.${content.name}`;
   }
 
   public constructor(

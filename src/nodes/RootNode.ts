@@ -5,10 +5,12 @@ import { type AnyNode, CommandNode, type DocumentMeta } from '.';
 
 export class RootNode extends Node {
   private getStart(): string {
-    if (this.meta.start) {
-      return (this.meta.start.split(',') as string[]).map(v => v.trim()).join(' ');
-    }
-    return '-1000,-1000';
+    return this.meta.start
+      ? this.meta.start
+          .split(',')
+          .map(v => v.trim())
+          .join(' ')
+      : '0 0';
   }
 
   private getMusic() {

@@ -46,4 +46,4 @@ export type State = Record<string, Record<string, string>>;
 
 export type Macro = ($: Compiler, state: State, ...args: string[]) => void;
 
-export type MacroWithYSLS = { default: Macro; ysls: YSLSCommand };
+export type MacroWithYSLS = Macro & { ysls: YSLSCommand };
