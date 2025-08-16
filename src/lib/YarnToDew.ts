@@ -3,6 +3,7 @@ import type { BuilderOutput, IncludeChange, Y2DConfig } from '../types';
 import { Patcher } from './Patcher';
 import { join, normalize, resolve } from 'path';
 import { getContent } from '../utils';
+import { generate } from '../generate';
 
 export class YarnToDew {
   private patcher = new Patcher();
@@ -18,12 +19,7 @@ export class YarnToDew {
   }
 
   public async process(filename: string): Promise<void> {
-    const res = await new Promise<BuilderOutput>((resolve, reject) => {
-      const w = new Worker(new URL('./Worker.ts', import.meta.url));
-      w.postMessage({ namespace: this.namespace, filename });
-      w.addEventListener('message', (e: MessageEvent<BuilderOutput>) => resolve(e.data));
-      w.addEventListener('error', reject);
-    });
+    const res = generate(this.config, filename);
     this.patcher.add(res.filename ?? 'content.json', res.content);
     this.patcher.add('i18n/default.json', res.i18n);
   }

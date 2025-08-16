@@ -45,21 +45,31 @@ export function toScreamingSnakeCase(str: string) {
 
 export async function tryGetConfig(namespace: string, directory: string): Promise<Y2DConfig> {
   const filenames = [`y2d.config.ts`, `y2d.config.js`];
-  const res = { namespace, directory, macros: Object.assign({}, macros), commands: Object.assign({}, commands) };
+  const config = { namespace, directory, macros: { ...macros }, commands: { ...commands } };
+
   for (const name of filenames) {
     try {
       const mod = await import(join(directory, name));
       if (!mod.default) throw new Error('no default export');
-      const { commands, macros } = mod.default;
-      return {
-        ...res,
-        namespace: 'Y2D',
-        macros: Object.assign(res.macros, macros),
-        commands: Object.assign(res.commands, commands)
-      };
+      logFns(mod.default);
+      Object.assign(config, {
+        macros: { ...config.macros, ...(mod.default.macros ?? {}) },
+        commands: { ...config.commands, ...(mod.default.commands ?? {}) }
+      });
+      break;
     } catch {
       // no-op
     }
   }
-  return res;
+  return config;
+}
+
+export function logFns(config: Y2DConfig) {
+  console.group('registered commands');
+  for (const key in config.commands) console.log(key);
+  console.groupEnd();
+
+  console.group('registered macros');
+  for (const key in config.macros) console.log(key);
+  console.groupEnd();
 }
