@@ -1,8 +1,8 @@
 # yarn2dew
 
-Compile dialogue files written in [Yarn](https://www.yarnspinner.dev/) to static JSON content that can be imported "natively" as events into Stardew Valley via Content Patcher.
+Compile dialogue files written in [Yarn](https://www.yarnspinner.dev/) to static JSON content that can be imported "natively" into Stardew Valley via Content Patcher.
 
-The SDV event format is not the easiest to work with. Yarn is easier to work with for writers _and_ programmers and supports a feature set that would be onerous to implement by hand in SDV. And while some parts of that feature set _does_ require the Yarn runtime, not _all_ of it does.
+The [SDV event format](https://stardewvalleywiki.com/Modding:Event_data) is not particularly easy to work with, but Yarn is easy to work with for writers _and_ programmers! It's worth noting that this only supports a subset of Yarn's overall feature set; there are serious complications around flow control, managing variables, state, function calls, &c., at runtime.
 
 ## Features
 
@@ -12,21 +12,21 @@ The SDV event format is not the easiest to work with. Yarn is easier to work wit
 - [x] ✨ automagical ✨ localization
 - [x] event conditions, game state queries
 - [x] consecutive dialogue inlining
-- [x] macros
-- [x] custom commands
+- [x] compile-time state
+- [x] macros, custom commands
 - [x] arbitrary commands (e.g.,`<<move farmer 3 4>>`)
 - [x] literal commands (e.g., `<<$ jump farmer 8>>`)
 - [x] yarn built-ins
   - [x] `jump` (use `$ jump` for SDV's "jump")
   - [x] `wait` (converted to `pause`)
-  - [x] `stop` (same as `end`)
+  - [x] `stop` (alias for `end`)
 - [x] automatic `end` insertion
 
 ### Unsupported
 
 - flow control: `if`, `else`, `elseif`, `detour`, `return`
 - variables: `set`, `declare`, `enum`
-- state: `once`, `endonce`
+- runtime state: `once`, `endonce`
 - line + node groups
 - saliency, storylets
 

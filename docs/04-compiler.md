@@ -1,6 +1,6 @@
 # Compiler
 
-The compiler API is pretty slapdash. It's essentially a wrapper over an array of text which is concatenated at the end with `/` to produce the JSON output.
+The compiler API is a lil' slapdash. It's essentially a wrapper over an array of text which is concatenated at the end with `/` to produce the JSON output.
 
 Most important things to note:
 
@@ -32,7 +32,7 @@ There are a few macros integrated by default:
 | `$beginFade`     | `[time] [toContinue]` | Start a global fade, move the camera off-screen.               |
 | `$endFade`       |                       | Fade in with prev. params, return camera to original position. |
 
-New ones can be registered in the `y2d.config.{ts,js}` file at the project root. By assigning a `ysls` property with a value adhering to the Yarn Language Server spec, the macro will be added to the project's YSLS config on boot.
+New ones can be registered in `y2d.config.ts`. By assigning a `ysls` property with a value adhering to the Yarn Language Server spec, the macro will be added to the project's YSLS config on boot.
 
 If you're relying on values in state, then also define a `getInitialState` property that creates the appropriate default values on the state.
 
@@ -73,14 +73,16 @@ const sayHelloYSLS = {
 
 const getInitialState = (state: State) => ({ ...state, helloCount: 1 });
 
-export const setHello = Object.assign(setHelloFn, { ysls: setHelloYSLS, getInitialState });
-export const sayHello = Object.assign(sayHelloFn, { ysls: sayHelloYSLS });
+const sayHello = Object.assign(sayHelloFn, { ysls: sayHelloYSLS });
+const setHello = Object.assign(setHelloFn, { ysls: setHelloYSLS, getInitialState });
+
+export { sayHello, setHello };
 ```
 
-And then in `y2d.config.ts`...
+In `y2d.config.ts`...
 
 ```ts
-import { sayHello, setHello } from './macros';
+import * as macros from './macros';
 
 declare module 'yarn2dew' {
   interface State {
@@ -90,10 +92,7 @@ declare module 'yarn2dew' {
 
 export default {
   // ...
-  macros: {
-    sayHello,
-    setHello
-  }
+  macros
 };
 ```
 

@@ -10,9 +10,15 @@ bun run dist    # creates an executable
 
 ## Config
 
-Create a `y2d.config.ts` file in your working directory.
+Create a `y2d.config.ts` file in your project's working directory.
 
 ```ts
+declare module 'yarn2dew' {
+  interface State {
+    // put state for custom macros and commands here
+  }
+}
+
 export default {
   namespace: 'MyMod',
   directory: '/foo/bar/baz',
