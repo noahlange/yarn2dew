@@ -42,11 +42,15 @@ export interface ContentPatcherManifest {
   Dependencies: ContentPatcherDependency[];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface State {}
+export interface State {
+  beginFade: { time: number; toContinue: boolean };
+  position: Record<string, { x: number; y: number; d: number }>;
+  positionOffset: Record<string, { x: number; y: number }>;
+  viewport: { x: number; y: number };
+}
 
 export interface Macro {
   ($: Compiler, state: State, ...args: string[]): void;
-  ysls?: YSLSCommand;
+  ysls?: Omit<YSLSCommand, 'YarnName'>;
   getInitialState?: (state: State) => State;
 }

@@ -12,27 +12,27 @@ function parse(x: string, y: string, d: string) {
   }
 }
 
-export const start = Object.assign(
-  ($: Compiler, state: State, name: string, x: string, y: string, d: string) => {
-    const args = parse(x, y, d);
-    const buffer = $.getBuffer();
-    const prev = buffer[0] ?? '';
-    const pos = (state.position[name] ??= args);
-    Object.assign(pos, args);
-    buffer[0] = prev + `${name} ${args.x} ${args.y} ${args.d} `;
-  },
-  {
-    getInitialState: (state: State) => ({ ...state, position: {} }),
-    ysls: {
-      YarnName: 'start',
-      Language: 'text',
-      Documentation: 'Sets the start position and direction for a character.',
-      Parameters: [
-        { Name: 'Character', Type: 'string' },
-        { Name: 'x', Type: 'number' },
-        { Name: 'y', Type: 'number' },
-        { Name: 'direction', Type: 'number' }
-      ]
-    }
-  }
-);
+function fn($: Compiler, state: State, name: string, x: string, y: string, d: string) {
+  const args = parse(x, y, d);
+  const buffer = $.getBuffer();
+  const prev = buffer[0] ?? '';
+  const pos = (state.position[name] ??= args);
+  Object.assign(pos, args);
+  buffer[0] = prev + `${name} ${args.x} ${args.y} ${args.d} `;
+}
+
+const ysls = {
+  Documentation: 'Sets the start position and direction for a character.',
+  Parameters: [
+    { Name: 'Character', Type: 'string' },
+    { Name: 'x', Type: 'number' },
+    { Name: 'y', Type: 'number' },
+    { Name: 'direction', Type: 'number' }
+  ]
+};
+
+function getInitialState(state: State) {
+  return { ...state, position: {} };
+}
+
+export default Object.assign(fn, { getInitialState, ysls });

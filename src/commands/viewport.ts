@@ -8,20 +8,17 @@ const parse = (x: string, y: string) => {
   throw new Error(`failed to parse viewport command args ${x}, ${y}`);
 };
 
-function viewport($: Compiler, state: State, x: string = '0', y: string = '0') {
+function fn($: Compiler, state: State, x: string = '0', y: string = '0') {
   state.viewport = parse(x, y);
   $.writeLine(`viewport ${state.viewport.x} ${state.viewport.y}`);
 }
 
-Object.assign(viewport, {
-  ysls: {
-    YarnName: 'viewport',
-    Documentation: 'Instantly reposition the camera to center on the given x, y tile position.',
-    Parameters: [
-      { Name: 'x', Type: 'number' },
-      { Name: 'y', Type: 'number' }
-    ]
-  }
-});
+const ysls = {
+  Documentation: 'Instantly reposition the camera to center on the given x, y tile position.',
+  Parameters: [
+    { Name: 'x', Type: 'number' },
+    { Name: 'y', Type: 'number' }
+  ]
+};
 
-export { viewport };
+export default Object.assign(fn, { ysls });

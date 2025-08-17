@@ -4,9 +4,9 @@ The compiler API is pretty slapdash. It's essentially a wrapper over an array of
 
 Most important things to note:
 
-1.  Every node has a `compile()` function that accepts two parameters, the compiler instance (conventionally, `$`) and state, which is discarded after compilation. You may notice that commands and macros are simply function versions of these and take an array of string arguments as parameters instead of requiring you to parse them manually.
-
-2.  The compiler has 4 particularly relevant methods and 3 others of incidental importance.
+1.  Every node has a `compile()` function that accepts two parameters, the compiler instance (conventionally, `$`) and state, which is discarded after compilation.
+2.  Commands and macros are simply function versions of these, taking an array of string arguments as parameters instead of requiring you to futz with the AST.
+3.  The compiler has 4 commonly-used public methods and 3 others of incidental importance.
 
 | Method                                                      | Description                                               |
 | :---------------------------------------------------------- | --------------------------------------------------------- |
@@ -43,47 +43,44 @@ An example macro to message the user "hello, world" an arbitrary number of times
 ```ts
 import type { State, Compiler } from 'yarn2dew';
 
-export const setHelloCount = Object.assign(
-  ($: Compiler, state: State, count: string) => {
-    state.helloCount = +count;
-  },
-  {
-    ysls: {
-      YarnName: '$setHelloCount',
-      Documentation: 'number of times to message "hello, world!"',
-      Parameters: [{ Name: 'Count', Type: 'number' }]
-    }
-  }
-);
+const setHelloFn = ($: Compiler, state: State, count: string) => {
+  state.helloCount = +count;
+};
 
-export const hello = Object.assign(
-  ($: Compiler, state: State, text: string = 'Hello, world!') => {
-    for (let i = 0; i < state.helloCount; i++) {
-      $.writeLine(`message "${text}"`);
-    }
-  },
-  {
-    getInitialState: (state: State) => ({ ...state, helloCount: 1 }),
-    ysls: {
-      YarnName: '$hello',
-      Documentation: 'Display a message reading "Hello, world!"',
-      Parameters: [
-        {
-          Name: 'Text',
-          Type: 'string',
-          Documentation: 'Text to print',
-          DefaultValue: 'Hello, world!'
-        }
-      ]
-    }
+const setHelloYSLS = {
+  Documentation: 'number of times to message "hello, world!"',
+  Parameters: [{ Name: 'Count', Type: 'number' }]
+};
+
+const sayHelloFn = ($: Compiler, state: State, text: string = 'Hello, world!') => {
+  const count = state.helloCount ?? 1;
+  for (let i = 0; i < count; i++) {
+    $.writeLine(`message "${text}"`);
   }
-);
+};
+
+const sayHelloYSLS = {
+  Documentation: 'Display a message reading "Hello, world!"',
+  Parameters: [
+    {
+      Name: 'Text',
+      Type: 'string',
+      Documentation: 'Text to print',
+      DefaultValue: 'Hello, world!'
+    }
+  ]
+};
+
+const getInitialState = (state: State) => ({ ...state, helloCount: 1 });
+
+export const setHello = Object.assign(setHelloFn, { ysls: setHelloYSLS, getInitialState });
+export const sayHello = Object.assign(sayHelloFn, { ysls: sayHelloYSLS });
 ```
 
 And then in `y2d.config.ts`...
 
 ```ts
-import { hello, setHelloCount } from './macros';
+import { sayHello, setHello } from './macros';
 
 declare module 'yarn2dew' {
   interface State {
@@ -93,6 +90,16 @@ declare module 'yarn2dew' {
 
 export default {
   // ...
-  macros: { hello, setHelloCount }
+  macros: {
+    sayHello,
+    setHello
+  }
 };
+```
+
+And then in yarn...
+
+```yarn
+<<$setHello 3>>
+<<$sayHello>>
 ```

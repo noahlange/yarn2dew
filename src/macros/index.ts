@@ -1,5 +1,6 @@
-import { beginFade, endFade } from './fade';
-import { positionReset } from './positionReset';
+import endFade from './endFade';
+import beginFade from './beginFade';
+import positionReset from './positionReset';
 
 export default {
   endFade,

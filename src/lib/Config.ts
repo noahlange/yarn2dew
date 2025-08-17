@@ -5,13 +5,6 @@ import commands from '../commands';
 import { getYSLS } from '../ysls/utils';
 import type { YSLSData } from '../ysls/types';
 
-export interface Y2DPartialConfig {
-  namespace: string;
-  directory?: string;
-  macros?: Record<string, Macro>;
-  commands?: Record<string, Macro>;
-}
-
 export interface Y2DConfig {
   namespace: string;
   directory: string;
