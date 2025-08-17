@@ -1,16 +1,16 @@
 import type { Compiler, State } from '../lib';
 
-function getOffset(state: State, name: string): [number, number] {
-  const offset = (state.positionOffset ??= {});
-  return [parseInt(offset[`${name}.x`] ?? 0), parseInt(offset[`${name}.y`] ?? 0)];
+function parse(state: State, name: string, toContinue: string) {
+  const offset = (state.positionOffset[name] ??= { x: 0, y: 0 });
+  return { name, toContinue: toContinue == 'true', ...offset };
 }
 
 function positionReset($: Compiler, state: State, name: string, toContinue = 'false') {
-  const [x, y] = getOffset(state, name);
-  if (x || y) $.writeLine(`positionOffset ${name} ${-x} ${-y} ${toContinue}`);
-  // update state
-  state.positionOffset[`${name}.x`] = '0';
-  state.positionOffset[`${name}.y`] = '0';
+  const args = parse(state, name, toContinue);
+  if (args.x || args.y) {
+    $.writeLine(`positionOffset ${args.name} ${-args.x} ${-args.y} ${args.toContinue}`);
+    state.positionOffset[name] = { x: 0, y: 0 };
+  }
 }
 
 Object.assign(positionReset, {

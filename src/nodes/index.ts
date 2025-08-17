@@ -6,7 +6,6 @@ import { RootNode } from './RootNode';
 import { Node } from './Node';
 import { DocumentNode } from './DocumentNode';
 import { WhenNode } from './WhenNode';
-import { StartNode } from './StartNode';
 import { ResponseNode } from './ResponseNode';
 import { QuestionNode } from './QuestionNode';
 import { MacroNode } from './MacroNode';
@@ -21,7 +20,6 @@ export type AnyNode =
   | ResponseNode
   | JumpNode
   | WhenNode
-  | StartNode
   | MacroNode;
 
 export {
@@ -35,7 +33,6 @@ export {
   ResponseNode,
   Node,
   WhenNode,
-  StartNode,
   MacroNode
 };
 

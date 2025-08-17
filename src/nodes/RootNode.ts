@@ -1,10 +1,10 @@
 import { Node } from './Node';
 
-import { Compiler, ScopeType, type State } from '../lib';
+import { Compiler, type State } from '../lib';
 import { type AnyNode, CommandNode, type DocumentMeta } from '.';
 
 export class RootNode extends Node {
-  private getStart(): string {
+  private getViewportStart(): string {
     return this.meta.start
       ? this.meta.start
           .split(',')
@@ -22,8 +22,8 @@ export class RootNode extends Node {
 
   private addEventPrelude($: Compiler) {
     if (this.meta.entry) {
-      $.prependLine(this.getStart()!);
-      $.prependLine(this.getMusic());
+      const buffer = $.getBuffer();
+      buffer.unshift(this.getMusic(), this.getViewportStart()!);
     }
   }
 
@@ -34,7 +34,7 @@ export class RootNode extends Node {
   }
 
   public compile($: Compiler, state: State) {
-    $.useScope(ScopeType.EVENT, this.meta.title, () => {
+    $.useScope(this.meta.title, () => {
       this.addEventPause();
       for (const node of this.children) {
         node.compile($, state);

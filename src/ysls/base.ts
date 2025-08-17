@@ -2,17 +2,6 @@ import type { YSLSCommand, YSLSFunction } from './types';
 
 export const commands: YSLSCommand[] = [
   {
-    YarnName: 'start',
-    Language: 'text',
-    Documentation: 'Sets the start position and direction for a character.',
-    Parameters: [
-      { Name: 'Character', Type: 'string' },
-      { Name: 'x', Type: 'number' },
-      { Name: 'y', Type: 'number' },
-      { Name: 'direction', Type: 'number' }
-    ]
-  },
-  {
     YarnName: 'when',
     Language: 'text',
     Documentation: 'Adds a condition to the event key string.',
@@ -272,33 +261,6 @@ export const commands: YSLSCommand[] = [
     Parameters: [
       { Name: 'track', Type: 'string', Documentation: 'Music track ID.' },
       { Name: 'args', Type: 'string', IsParamsArray: true }
-    ]
-  },
-  {
-    YarnName: 'positionOffset',
-    Parameters: [
-      { Name: 'character', Type: 'string' },
-      { Name: 'x', Type: 'number' },
-      { Name: 'y', Type: 'number' },
-      {
-        Name: 'continue',
-        Type: 'bool',
-        DefaultValue: 'false',
-        Documentation: "Pause the event while the NPC's position is being offset."
-      }
-    ]
-  },
-  {
-    YarnName: 'faceDirection',
-    Parameters: [
-      { Name: 'character', Type: 'string' },
-      { Name: 'direction', Type: 'number' },
-      {
-        Name: 'continue',
-        Type: 'bool',
-        DefaultValue: 'false',
-        Documentation: "Pause the event while the NPC's position is being offset."
-      }
     ]
   },
   {

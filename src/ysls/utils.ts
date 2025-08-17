@@ -1,13 +1,13 @@
-import type { Macro, MacroWithYSLS } from '../types';
+import type { Macro } from '../types';
 import type { YSLSCommand, YSLSData, YSLSFunction } from './types';
 import { commands, functions } from './base';
 import type { Y2DPartialConfig } from '../lib/Config';
 
-function getConfigCommands(config: Record<string, Macro | MacroWithYSLS>): YSLSCommand[] {
+function getConfigCommands(config: Record<string, Macro>): YSLSCommand[] {
   const ysls: YSLSCommand[] = [];
   for (const key in config) {
     const m = config[key];
-    if ('ysls' in m) ysls.push(m.ysls);
+    if (m.ysls) ysls.push(m.ysls);
   }
   return ysls;
 }

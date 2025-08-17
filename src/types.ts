@@ -42,8 +42,11 @@ export interface ContentPatcherManifest {
   Dependencies: ContentPatcherDependency[];
 }
 
-export type State = Record<string, Record<string, string>>;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface State {}
 
-export type Macro = ($: Compiler, state: State, ...args: string[]) => void;
-
-export type MacroWithYSLS = Macro & { ysls: YSLSCommand };
+export interface Macro {
+  ($: Compiler, state: State, ...args: string[]): void;
+  ysls?: YSLSCommand;
+  getInitialState?: (state: State) => State;
+}

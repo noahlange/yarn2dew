@@ -25,7 +25,7 @@ export class WhenNode extends Node {
   }
 
   public compile($: Compiler) {
-    $.addReq(this.condition, this.params.join(' '));
+    $.addRequirement(this.condition, this.params.join(' '));
   }
 
   public constructor(

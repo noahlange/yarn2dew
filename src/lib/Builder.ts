@@ -40,7 +40,7 @@ export class Builder {
   }
 
   private getEventKey(content: Scope) {
-    const prereq = Object.entries(content.prereq)
+    const prereq = Object.entries(content.reqs)
       .map(([k, v]) => `${k} ${v}`)
       .join('/');
 

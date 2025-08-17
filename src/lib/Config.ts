@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Macro, MacroWithYSLS } from '../types';
+import type { Macro } from '../types';
 import macros from '../macros';
 import commands from '../commands';
 import { getYSLS } from '../ysls/utils';
@@ -8,8 +8,8 @@ import type { YSLSData } from '../ysls/types';
 export interface Y2DPartialConfig {
   namespace: string;
   directory?: string;
-  macros?: Record<string, Macro | MacroWithYSLS>;
-  commands?: Record<string, Macro | MacroWithYSLS>;
+  macros?: Record<string, Macro>;
+  commands?: Record<string, Macro>;
 }
 
 export interface Y2DConfig {

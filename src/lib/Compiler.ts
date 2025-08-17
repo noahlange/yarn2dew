@@ -1,8 +1,9 @@
 import { match } from 'ts-pattern';
 import { DocumentNode } from '../nodes';
 import { Builder } from './Builder';
-import type { State } from '../types';
+
 import type { Config } from './Config';
+import type { State } from '../types';
 
 export enum ScopeType {
   NONE,
@@ -12,7 +13,7 @@ export enum ScopeType {
 export interface Scope {
   id: number;
   type: ScopeType;
-  prereq: Record<string, string>;
+  reqs: Record<string, string>;
   name: string | null;
   content: string[];
   count: number;
@@ -35,15 +36,11 @@ export class Compiler {
 
   private getNewScope(type: ScopeType, name: string | null = null): number {
     const id = ++this.scopeID;
-    this.frames[id] = { id, type, name, content: [], prereq: {}, count: 0 };
+    this.frames[id] = { id, type, name, content: [], reqs: {}, count: 0 };
     return id;
   }
 
-  public useScope(type: ScopeType, name: string, cb: () => void) {
-    if (this.scope.type !== ScopeType.NONE) {
-      this.scope.content = this.buffer.slice();
-    }
-
+  public useScope(name: string, cb: () => void, type = ScopeType.EVENT) {
     this.buffer = [];
     this.stack.push(this.getNewScope(type, name));
     cb();
@@ -74,10 +71,10 @@ export class Compiler {
 
   private i18n: Record<string, string> = {};
   private scopeID: number = 0;
-  private buffer: string[] = [];
   private frames: Record<number, Scope> = {};
   private stack: number[] = [];
-  private state: State = {};
+  private state: State;
+  private buffer: string[] = [];
 
   public get namespace() {
     return this.config.namespace;
@@ -98,33 +95,33 @@ export class Compiler {
     this.buffer[this.buffer.length - 1] = prev + text;
   }
 
-  public prepend(text: string) {
-    const prev = this.buffer[0] ?? '';
-    this.buffer[0] = prev + text;
-  }
-
   public writeLine(text: string) {
     this.buffer.push(text);
   }
 
-  public prependLine(text: string) {
-    this.buffer.unshift(text);
-  }
-
-  public addReq(key: string, value: string) {
-    this.scope.prereq[key] = value;
+  public addRequirement(key: string, value: string) {
+    this.scope.reqs[key] = value;
   }
 
   public compile() {
-    this.doc.compile(this, this.state);
+    this.doc.compile(this, this.state as State);
+  }
+
+  public getBuffer() {
+    return this.buffer;
   }
 
   private constructor(
     public config: Config,
     private doc: DocumentNode
   ) {
-    this.state = {};
+    this.state = {} as State;
     this.stack = [this.getNewScope(ScopeType.NONE)];
     this.buffer = [];
+    const fns = [Object.values(this.config.macros), Object.values(this.config.commands)].flat();
+    for (const fn of fns) {
+      if (!fn.getInitialState) continue;
+      this.state = fn.getInitialState?.(this.state);
+    }
   }
 }
