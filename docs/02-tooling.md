@@ -15,14 +15,13 @@ Create a `y2d.config.ts` file in your project's working directory.
 ```ts
 declare module 'yarn2dew' {
   interface State {
-    // put state for custom macros and commands here
+    // put state for custom ommands here
   }
 }
 
 export default {
   namespace: 'MyMod',
   directory: '/foo/bar/baz',
-  macros: {},
   commands: {}
 };
 ```

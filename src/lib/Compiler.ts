@@ -118,8 +118,7 @@ export class Compiler {
     this.state = {} as State;
     this.stack = [this.getNewScope(ScopeType.NONE)];
     this.buffer = [];
-    const fns = [Object.values(this.config.macros), Object.values(this.config.commands)].flat();
-    for (const fn of fns) {
+    for (const fn of Object.values(this.config.commands)) {
       if (!fn.getInitialState) continue;
       this.state = fn.getInitialState?.(this.state);
     }

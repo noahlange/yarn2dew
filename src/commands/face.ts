@@ -23,7 +23,7 @@ const ysls = {
   Parameters: [
     { Name: 'npc1', Type: 'string' },
     { Name: 'npc2', Type: 'string' },
-    { Name: 'continue', Type: 'boolean', DefaultValue: false }
+    { Name: 'continue', Type: 'boolean', DefaultValue: 'false' }
   ]
 };
 

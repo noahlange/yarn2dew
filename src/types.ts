@@ -49,7 +49,7 @@ export interface State {
   viewport: { x: number; y: number };
 }
 
-export interface Macro {
+export interface Command {
   ($: Compiler, state: State, ...args: string[]): void;
   ysls?: Omit<YSLSCommand, 'YarnName'>;
   getInitialState?: (state: State) => State;

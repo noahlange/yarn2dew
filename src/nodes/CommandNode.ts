@@ -2,7 +2,6 @@ import yarn from '@mnbroatch/bondage/src/parser/nodes.js';
 import { type NodeType } from '@mnbroatch/bondage/src/parser/nodes.js';
 
 import { match, P } from 'ts-pattern';
-import { MacroNode } from './MacroNode';
 import { Node } from './Node';
 import { Compiler, Parser, type State } from '../lib';
 import { WhenNode } from './WhenNode';
@@ -25,7 +24,6 @@ export class CommandNode extends Node {
     return {
       value: match(name)
         .with('$', () => new CommandNode(args[0], args.slice(1)))
-        .with(P.string.startsWith('$'), () => new MacroNode(name.slice(1), args))
         .with('when', () => WhenNode.parse(parser, node as GenericCommandNode, []).value)
         .otherwise(name => new CommandNode(name, args)),
       next: index + 1

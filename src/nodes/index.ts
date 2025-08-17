@@ -8,7 +8,6 @@ import { DocumentNode } from './DocumentNode';
 import { WhenNode } from './WhenNode';
 import { ResponseNode } from './ResponseNode';
 import { QuestionNode } from './QuestionNode';
-import { MacroNode } from './MacroNode';
 
 export type AnyNode =
   | CommandNode
@@ -19,8 +18,7 @@ export type AnyNode =
   | QuestionNode
   | ResponseNode
   | JumpNode
-  | WhenNode
-  | MacroNode;
+  | WhenNode;
 
 export {
   CommandNode,
@@ -32,8 +30,7 @@ export {
   QuestionNode,
   ResponseNode,
   Node,
-  WhenNode,
-  MacroNode
+  WhenNode
 };
 
 export type { DocumentMeta } from './DocumentNode';

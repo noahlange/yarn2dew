@@ -1,6 +1,5 @@
 import { join } from 'node:path';
-import type { Macro } from '../types';
-import macros from '../macros';
+import type { Command } from '../types';
 import commands from '../commands';
 import { getYSLS } from '../ysls/utils';
 import type { YSLSData } from '../ysls/types';
@@ -8,8 +7,7 @@ import type { YSLSData } from '../ysls/types';
 export interface Y2DConfig {
   namespace: string;
   directory: string;
-  macros: Record<string, Macro>;
-  commands: Record<string, Macro>;
+  commands: Record<string, Command>;
 }
 
 export class Config {
@@ -17,7 +15,7 @@ export class Config {
    * Returns a basic test config.
    */
   public static get test() {
-    return new Config({ directory: process.cwd(), namespace: 'Y2D', macros, commands });
+    return new Config({ directory: process.cwd(), namespace: 'Y2D', commands });
   }
 
   public static async load(directory: string = process.cwd()): Promise<Config> {
@@ -32,7 +30,6 @@ export class Config {
           {
             directory,
             ...mod.default,
-            macros: { ...macros, ...(mod.default.macros ?? {}) },
             commands: { ...commands, ...(mod.default.commands ?? {}) }
           },
           getYSLS(mod.default)
@@ -57,10 +54,6 @@ export class Config {
 
   public get directory() {
     return this.data.directory ?? process.cwd();
-  }
-
-  public get macros() {
-    return this.data.macros;
   }
 
   public get commands() {

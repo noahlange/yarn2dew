@@ -6,7 +6,7 @@
 - [x] branching dialogue
 - [x] event conditions, game state queries
 - [x] consecutive dialogue inlining
-- [x] [macros and custom commands](/docs/04-compiler.md)
+- [x] [custom commands](/docs/04-compiler.md)
 - [x] arbitrary commands (e.g.,`<<move farmer 3 4>>`)
 - [x] literal commands (e.g., `<<$ jump farmer 8>>`)
 - [x] yarn built-ins

@@ -8,9 +8,9 @@ const res = generate(
   target: Data/Events/Saloon
   ---
   <<viewport 5 6>>
-  <<$beginFade>>
+  <<beginFade>>
   Gus: Well, hellooooooo--
-  <<$endFade>>
+  <<endFade>>
   ===
 `
 );
