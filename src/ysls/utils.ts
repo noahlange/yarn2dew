@@ -2,7 +2,8 @@ import type { Macro } from '../types';
 import type { YSLSCommand, YSLSData, YSLSFunction } from './types';
 import macros from '../macros';
 import commands from '../commands';
-import * as base from './base';
+import baseCommands from './commands';
+import baseFunctions from './functions';
 import type { Y2DConfig } from '../lib/Config';
 
 function getConfigCommands(config: Record<string, Macro>, isMacro: boolean): YSLSCommand[] {
@@ -32,7 +33,7 @@ export function getYSLS(config: Y2DConfig): YSLSData {
   }
 
   return {
-    Commands: [...base.commands, ...all],
-    Functions: [...base.functions]
+    Commands: [...baseCommands, ...all],
+    Functions: [...baseFunctions]
   };
 }
