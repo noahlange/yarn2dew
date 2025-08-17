@@ -1,11 +1,11 @@
-import endFade from './endFade';
 import beginFade from './beginFade';
-import offsetReset from './offsetReset';
+import endFade from './endFade';
+import resetOffset from './resetOffset';
 import face from './face';
 
 export default {
-  endFade,
   beginFade,
-  offsetReset,
+  endFade,
+  resetOffset,
   face
 };

@@ -11,7 +11,7 @@ const res = generate(
   <<positionOffset Bob 5 0>>
   <<positionOffset Bob 0 -5>>
   <<positionOffset Bob -10 -5>>
-  <<$offsetReset Bob>>
+  <<$resetOffset Bob>>
   ===
 `
 );
