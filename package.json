@@ -1,7 +1,10 @@
 {
   "name": "yarn2dew",
   "version": "0.1.0",
-  "type":"module",
+  "type": "module",
+  "exports": {
+    "default": "./src/index.ts"
+  },
   "description": "Compiles Yarn dialogue to Stardew Valley event format.",
   "devDependencies": {
     "@eslint/js": "^9.33.0",
