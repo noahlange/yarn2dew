@@ -18,20 +18,29 @@ Most important things to note:
 | `$.addRequirement(key: string, value: string)`              | Add a key-value pair to the list of event requirements.   |
 | `$.addScope(type: ScopeType, name: string, cb: () => void)` | Create a new compiler scope with the given type and name. |
 
-## Commands & Macros
+## Macros & Commands
 
-You can write custom `commands`, which read and write from state at compile-time, and `macros`, which expand to encompass multiple commands (and also modify state). These have low-level access to the compiler and a primitive event state.
+You can write both **Commands** and **Macros**. While the underlying implementation is identical, there's a meaningful semantic distinction between the two.
 
-At the implementation level there's no difference between a macro and a command, but using a macro allows you to explicitly indicate that something isn't built-in.
+Long story short: if emitting it verbatim will cause an error at runtime, use a Macro. Long story long:
 
-There are a few macros integrated by default:
+- **Commands** (capital C) correspond 1:1 to the lowercase-c commands in the [SDV event format](https://stardewvalleywiki.com/Modding:Event_data#Event_scripts). These may _modify_ the compiler state (e.g., `faceDirection` updates a character's position in the scene), but should never _derive_ any behavior from it. If a command is invoked but not given a specific code implementation, the underlying SDV command will be emitted verbatim.
 
-| Name             | Signature                      | Description                                                    |
-| :--------------- | :----------------------------- | -------------------------------------------------------------- |
-| `$positionReset` | `<actor>`                      | Reset's an actor's pixel offset to 0, 0.                       |
-| `$beginFade`     | `[time] [continue]`            | Start a global fade, move the camera off-screen.               |
-| `$endFade`       |                                | Fade in with prev. params, return camera to original position. |
-| `$face`          | `<actor1> <actor2> [continue]` | Make actor 1 change direction to face actor 2                  |
+- **Macros** can write to and read from the state, and can emit any number of (lowercase-c) commands. If a Macro is invoked but not defined in code, the compiler _will throw an error_.
+
+| Type    | Read State | Write State | 1:1 SDV | compile-time 💥 | runtime 💥 |
+| :------ | :--------: | :---------: | :-----: | :-------------: | :--------: |
+| Command |     ✗      |      ✓      |    ✓    |        ✗        |     ✓      |
+| Macro   |     ✓      |      ✓      |    ✗    |        ✓        |     ✗      |
+
+There are a few macros implemented by default:
+
+| Name           | Signature                      | Description                                                    |
+| :------------- | :----------------------------- | -------------------------------------------------------------- |
+| `$offsetReset` | `<actor>`                      | Reset's an actor's pixel offset to 0, 0.                       |
+| `$beginFade`   | `[time] [continue]`            | Start a global fade, move the camera off-screen.               |
+| `$endFade`     |                                | Fade in with prev. params, return camera to original position. |
+| `$face`        | `<actor1> <actor2> [continue]` | Make actor 1 change direction to face actor 2.                 |
 
 New ones can be registered in `y2d.config.ts`. By assigning a `ysls` property with a value adhering to the Yarn Language Server spec, the macro will be added to the project's YSLS config on boot.
 
@@ -39,7 +48,7 @@ If you're relying on values in state, then also define a `getInitialState` prope
 
 ### Example
 
-An example macro to message the user "hello, world" an arbitrary number of times and another macro to set the number of times to message.
+An example macro to message the user "hello, world" an arbitrary number of times and another to set the number of times to message.
 
 ```ts
 import type { State, Compiler } from 'yarn2dew';

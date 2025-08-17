@@ -11,16 +11,16 @@ const res = generate(
   <<positionOffset Bob 5 0>>
   <<positionOffset Bob 0 -5>>
   <<positionOffset Bob -10 -5>>
-  <<$positionReset Bob>>
+  <<$offsetReset Bob>>
   ===
 `
 );
 
 const content = getContentEntries(res.content);
 
-describe('positionReset', () => {
+describe('offsetReset', () => {
   const event = content['Y2D.Entry'];
-  test('resets position', () => {
+  test('resets position offset', () => {
     expect(event).toInclude('positionOffset Bob 5 0');
     expect(event).toInclude('positionOffset Bob 0 -5');
     expect(event).toInclude('positionOffset Bob -10 -5');

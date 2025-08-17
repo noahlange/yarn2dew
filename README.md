@@ -13,7 +13,7 @@ The [SDV event format](https://stardewvalleywiki.com/Modding:Event_data) is not 
 - [x] event conditions, game state queries
 - [x] consecutive dialogue inlining
 - [x] compile-time state
-- [x] macros, custom commands
+- [x] macros + custom commands
 - [x] arbitrary commands (e.g.,`<<move farmer 3 4>>`)
 - [x] literal commands (e.g., `<<$ jump farmer 8>>`)
 - [x] yarn built-ins
