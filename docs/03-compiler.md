@@ -26,11 +26,12 @@ At the implementation level there's no difference between a macro and a command,
 
 There are a few macros integrated by default:
 
-| Name             | Signature             | Description                                                    |
-| :--------------- | :-------------------- | -------------------------------------------------------------- |
-| `$positionReset` | `<actor>`             | Reset's an actor's pixel offset to 0, 0.                       |
-| `$beginFade`     | `[time] [toContinue]` | Start a global fade, move the camera off-screen.               |
-| `$endFade`       |                       | Fade in with prev. params, return camera to original position. |
+| Name             | Signature                      | Description                                                    |
+| :--------------- | :----------------------------- | -------------------------------------------------------------- |
+| `$positionReset` | `<actor>`                      | Reset's an actor's pixel offset to 0, 0.                       |
+| `$beginFade`     | `[time] [continue]`            | Start a global fade, move the camera off-screen.               |
+| `$endFade`       |                                | Fade in with prev. params, return camera to original position. |
+| `$face`          | `<actor1> <actor2> [continue]` | Make actor 1 change direction to face actor 2                  |
 
 New ones can be registered in `y2d.config.ts`. By assigning a `ysls` property with a value adhering to the Yarn Language Server spec, the macro will be added to the project's YSLS config on boot.
 
