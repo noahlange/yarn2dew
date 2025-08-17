@@ -183,10 +183,39 @@ const commands: YSLSCommand[] = [
     Parameters: [{ Name: 'Cutscene ID', Type: 'string' }]
   },
   {
+    YarnName: 'doAction',
+    Documentation:
+      'Acts as if the player had clicked the specified x/y coordinate and triggers any relevant action.',
+    Parameters: [
+      { Name: 'x', Type: 'number' },
+      { Name: 'y', Type: 'number' }
+    ]
+  },
+  {
+    YarnName: 'dump',
+    Documentation:
+      'Starts the special "cold shoulder" and "second chance" dialogue events for the given group',
+    Parameters: [
+      {
+        Name: 'group',
+        Type: 'string',
+        Documentation: 'Women if group is `girls`, otherwise men.'
+      }
+    ]
+  },
+  {
     YarnName: 'emote',
+    Documentation:
+      "Make the given NPC name perform an emote, which is a little icon shown above the NPC's head.",
     Parameters: [
       { Name: 'actor', Type: 'string' },
-      { Name: 'emote', Type: 'number' }
+      { Name: 'emote', Type: 'number' },
+      {
+        Name: 'continue',
+        Type: 'boolean',
+        Documentation: 'If true, the next command will play out immediately.',
+        DefaultValue: 'false'
+      }
     ]
   },
   {
@@ -306,6 +335,19 @@ const commands: YSLSCommand[] = [
     Parameters: [{ Name: 'unfade', Type: 'Boolean', DefaultValue: 'true' }]
   },
   {
+    YarnName: 'farmerEat',
+    Documentation:
+      'Make the player eat an object. (The farmer actually does eat the object, so buffs will apply, healing will occur, etc.). ',
+    Parameters: [
+      {
+        Name: 'object_id',
+        Type: 'string',
+        Documentation:
+          "If object's IsDrink is True, the drinking animation will play instead of the eating one."
+      }
+    ]
+  },
+  {
     YarnName: 'fork',
     Parameters: [{ Name: 'Fork name', Type: 'string' }]
   },
@@ -337,6 +379,19 @@ const commands: YSLSCommand[] = [
         Type: 'bool',
         DefaultValue: 'false',
         Documentation: 'Continue executing the event during the fade.'
+      }
+    ]
+  },
+  {
+    YarnName: 'glow',
+    Parameters: [
+      { Name: 'r', Type: 'number' },
+      { Name: 'g', Type: 'number' },
+      { Name: 'b', Type: 'number' },
+      {
+        Name: 'hold',
+        Type: 'boolean',
+        Documentation: 'If true, will fade to and hold that color until stopGlowing is used'
       }
     ]
   },
@@ -380,12 +435,20 @@ const commands: YSLSCommand[] = [
     Parameters: [{ Name: 'name', Type: 'string' }]
   },
   {
+    YarnName: 'money',
+    Documentation: 'Adds/removes the specified amount of money.',
+    Parameters: [{ Name: 'amount', Type: 'number' }]
+  },
+  {
     YarnName: 'move',
+    Documentation:
+      "Make a named NPC move by the given tile offset from their current position (along one axis only), and face the given direction when they're done. ",
     Parameters: [
       { Name: 'actor', Type: 'string' },
       { Name: 'x', Type: 'number' },
       { Name: 'y', Type: 'number' },
-      { Name: 'd', Type: 'number' }
+      { Name: 'd', Type: 'number' },
+      { Name: 'continue', Type: 'boolean', DefaultValue: 'false' }
     ]
   },
   {
@@ -418,13 +481,33 @@ const commands: YSLSCommand[] = [
   },
   {
     YarnName: 'screenFlash',
-    Parameters: [{ Name: 'count', Type: 'number' }]
+    Documentation: 'Flashes the screen white for an instant.',
+    Parameters: [
+      {
+        Name: 'count',
+        Type: 'number',
+        Documentation:
+          'An alpha value from 0 to 1 adjusts the brightness, and values from 1 and out flashes pure white for x seconds.'
+      }
+    ]
+  },
+  {
+    YarnName: 'setRunning',
+    Documentation: 'Set the player as running.',
+    Parameters: []
   },
   {
     YarnName: 'shake',
     Parameters: [
       { Name: 'actor', Type: 'string' },
       { Name: 'duration', Type: 'number' }
+    ]
+  },
+  {
+    YarnName: 'showFrame',
+    Parameters: [
+      { Name: 'actor', Type: 'string' },
+      { Name: 'frame_id', Type: 'number' }
     ]
   },
   {
@@ -451,8 +534,34 @@ const commands: YSLSCommand[] = [
     ]
   },
   {
+    YarnName: 'speed',
+    Parameters: [
+      { Name: 'actor', Type: 'string' },
+      {
+        Name: 'speed',
+        Type: 'number'
+      }
+    ]
+  },
+  {
+    YarnName: 'startJittering',
+    Documentation: 'Make the player start jittering.',
+    Parameters: []
+  },
+  {
+    YarnName: 'stopAnimation farmer',
+    Documentation: "Stop the farmer's current animation.",
+    Parameters: []
+  },
+  {
     YarnName: 'stopAnimation',
+    Documentation: "Stop the named NPC's current animation. Not applicable to the farmer.",
     Parameters: [{ Name: 'actor', Type: 'string' }]
+  },
+  {
+    YarnName: 'stopGlowing',
+    Documentation: 'Make the screen stop glowing.',
+    Parameters: []
   },
   {
     YarnName: 'stopSound',
@@ -485,6 +594,54 @@ const commands: YSLSCommand[] = [
     ]
   },
   {
+    YarnName: 'tossConcession',
+    Documentation:
+      'Causes an NPC to throw their concession in the air. concessionId is from Data/Concessions.',
+    Parameters: [
+      { Name: 'actor', Type: 'string' },
+      { Name: 'concession_id', Type: 'string' }
+    ]
+  },
+  {
+    YarnName: 'translateName',
+    Documentation:
+      'Set the display name for an NPC in the event to match the given translation key.',
+    Parameters: [
+      { Name: 'actor', Type: 'string' },
+      { Name: 'translation_key', Type: 'string' }
+    ]
+  },
+  {
+    YarnName: 'tutorialMenu',
+    Documentation: 'Show the tutorial menu if no other menu is open.',
+    Parameters: []
+  },
+  {
+    YarnName: 'viewport move',
+    Documentation:
+      'Pan the the camera in the direction (and with the velocity) defined by x/y for the given duration in milliseconds.',
+    Parameters: [
+      { Name: 'x', Type: 'number' },
+      { Name: 'y', Type: 'number' },
+      { Name: 'duration', Type: 'number', Documentation: 'movement duration' }
+    ]
+  },
+  {
+    YarnName: 'viewport',
+    Parameters: [
+      { Name: 'x', Type: 'number' },
+      { Name: 'y', Type: 'number' }
+    ]
+  },
+  {
+    YarnName: 'waitForAllStationary',
+    Parameters: []
+  },
+  {
+    YarnName: 'waitForOtherPlayers',
+    Parameters: []
+  },
+  {
     YarnName: 'warp',
     Parameters: [
       { Name: 'actor', Type: 'string' },
@@ -499,13 +656,6 @@ const commands: YSLSCommand[] = [
     Parameters: [
       { Name: 'Condition', Type: 'string' },
       { Name: 'Parameters', Type: 'any', IsParamsArray: true }
-    ]
-  },
-  {
-    YarnName: 'viewport',
-    Parameters: [
-      { Name: 'x', Type: 'number' },
-      { Name: 'y', Type: 'number' }
     ]
   }
 ];
