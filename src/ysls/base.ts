@@ -37,13 +37,30 @@ export const commands: YSLSCommand[] = [
   {
     YarnName: 'action',
     Parameters: [
-      { Name: 'Trigger', Type: 'string' },
-      { Name: 'Parameters', Type: 'any', IsParamsArray: true }
+      { Name: 'trigger', Type: 'string' },
+      { Name: 'parameters', Type: 'any', IsParamsArray: true }
+    ]
+  },
+  {
+    YarnName: 'skippable',
+    Documentation: 'Mark an event as skippable.',
+    Parameters: []
+  },
+  {
+    YarnName: '$',
+    Documentation: 'Invoke a built-in command with the given name and args.',
+    Parameters: [
+      { Name: 'command', Type: 'string' },
+      { Name: 'parameters', Type: 'any', IsParamsArray: true }
     ]
   },
   {
     YarnName: 'mail',
     Parameters: [{ Name: 'name', Type: 'string' }]
+  },
+  {
+    YarnName: 'fade',
+    Parameters: [{ Name: 'unfade', Type: 'Boolean', DefaultValue: 'true' }]
   },
   {
     YarnName: 'showFrame',
@@ -57,6 +74,18 @@ export const commands: YSLSCommand[] = [
     Parameters: [
       { Name: 'x', Type: 'number' },
       { Name: 'y', Type: 'number' }
+    ]
+  },
+  {
+    YarnName: 'temporarySprite',
+    Parameters: [
+      { Name: 'x', Type: 'number' },
+      { Name: 'y', Type: 'number' },
+      { Name: 'rowInTexture', Type: 'number' },
+      { Name: 'animationLength', Type: 'number' },
+      { Name: 'animationInterval', Type: 'number' },
+      { Name: 'flipped', Type: 'boolean' },
+      { Name: 'layerDepth', Type: 'number' }
     ]
   },
   {
@@ -232,6 +261,17 @@ export const commands: YSLSCommand[] = [
       { Name: 'x', Type: 'number' },
       { Name: 'y', Type: 'number' },
       { Name: 'd', Type: 'number' }
+    ]
+  },
+  {
+    YarnName: 'playMusic',
+    Parameters: [{ Name: 'track', Type: 'string', Documentation: 'Music track ID.' }]
+  },
+  {
+    YarnName: 'specificTemporarySprite',
+    Parameters: [
+      { Name: 'track', Type: 'string', Documentation: 'Music track ID.' },
+      { Name: 'args', Type: 'string', IsParamsArray: true }
     ]
   },
   {
