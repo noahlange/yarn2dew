@@ -48,28 +48,50 @@ If you're relying on values in state, then also define a `getInitialState` prope
 
 ### Example
 
-An example macro to message the user "hello, world" an arbitrary number of times and another to set the number of times to message.
+An example of two macros, one to message the user "hello, world" an arbitrary number of times and another to set the number of times to send the message.
+
+My recommendation is to create multiple functions: one for parsing the string input values and returning validated arguments, another for generating code, possibly another for making state modifications. You can inline everything, but that can make it kinda unintelligible.
 
 ```ts
 import type { State, Compiler } from 'yarn2dew';
 
-const setHelloFn = ($: Compiler, state: State, count: string) => {
-  state.helloCount = +count;
-};
+function parse(count: string) {
+  const val = parseInt(count);
+  if (!isFinite(val)) {
+    throw new Error('Count must be a finite numeric value.');
+  }
+  return { count: val };
+}
 
-const setHelloYSLS = {
+function setHello($: Compiler, state: State, count: string) {
+  const args = parse(count);
+  state.helloCount = args.count;
+}
+
+function getInitialState(state: State) {
+  return { ...state, helloCount: 1 };
+}
+
+const ysls = {
   Documentation: 'number of times to message "hello, world!"',
   Parameters: [{ Name: 'Count', Type: 'number' }]
 };
 
-const sayHelloFn = ($: Compiler, state: State, text: string = 'Hello, world!') => {
+export default Object.assign(setHello, { ysls, getInitialState });
+```
+
+```ts
+import type { State, Compiler } from 'yarn2dew';
+
+function sayHello($: Compiler, state: State, text: string = 'Hello, world!') {
+  const i18n = $.getI8nKey(text);
   const count = state.helloCount ?? 1;
   for (let i = 0; i < count; i++) {
-    $.writeLine(`message "${text}"`);
+    $.writeLine(`message {{${i18n}}}`);
   }
-};
+}
 
-const sayHelloYSLS = {
+const ysls = {
   Documentation: 'Display a message reading "Hello, world!"',
   Parameters: [
     {
@@ -81,18 +103,14 @@ const sayHelloYSLS = {
   ]
 };
 
-const getInitialState = (state: State) => ({ ...state, helloCount: 1 });
-
-const sayHello = Object.assign(sayHelloFn, { ysls: sayHelloYSLS });
-const setHello = Object.assign(setHelloFn, { ysls: setHelloYSLS, getInitialState });
-
-export { sayHello, setHello };
+export default Object.assign(sayHello, { ysls });
 ```
 
 In `y2d.config.ts`...
 
 ```ts
-import * as macros from './macros';
+import sayHello from './macros/sayHello';
+import setHello from './macros/setHello';
 
 declare module 'yarn2dew' {
   interface State {
@@ -102,7 +120,10 @@ declare module 'yarn2dew' {
 
 export default {
   // ...
-  macros
+  macros: {
+    sayHello,
+    setHello
+  }
 };
 ```
 

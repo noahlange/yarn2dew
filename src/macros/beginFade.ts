@@ -30,6 +30,7 @@ const fn = (
   toContinue: string = 'false'
 ) => {
   const args = parse(state, time, toContinue);
+  state.beginFade = args;
   $.writeLine(`globalFade ${args.time} ${args.toContinue}`);
   $.writeLine('viewport -100 -100');
 };

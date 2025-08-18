@@ -3,10 +3,10 @@ import type { Compiler, State } from '../lib';
 const fn = ($: Compiler, state: State) => {
   // reset viewport to its initial value
   const { x, y } = state.viewport;
-  $.writeLine(`viewport ${x} ${y}`);
   // normal fade-in behavior
-  const { time, toContinue } = state.beginFade;
-  $.writeLine(`globalFadeToClear ${time} ${toContinue}`);
+  const { time } = state.beginFade;
+  $.writeLine(`globalFadeToClear ${time} true`);
+  $.writeLine(`viewport ${x} ${y}`);
 };
 
 const ysls = {
