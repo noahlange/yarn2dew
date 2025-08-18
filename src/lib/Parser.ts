@@ -60,7 +60,7 @@ export class Parser {
         .with(P.nullish, () => false)
         .with(P.instanceOf($.JumpNode), () => false)
         .when(
-          c => c instanceof $.CommandNode && c.name !== 'end',
+          c => c instanceof $.CommandNode && c.name === 'end',
           () => false
         )
         .otherwise(() => true);

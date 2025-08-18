@@ -4,13 +4,24 @@ import { Compiler, type State } from '../lib';
 import { type AnyNode, CommandNode, type DocumentMeta } from '.';
 
 export class RootNode extends Node {
-  private getViewportStart(): string {
-    return this.meta.start
-      ? this.meta.start
-          .split(',')
-          .map(v => v.trim())
-          .join(' ')
-      : '0 0';
+  private getViewportPosition() {
+    let split = this.meta.start.split(',');
+    if (split.length <= 1) {
+      split = this.meta.start.split(' ');
+    }
+    if (split.length >= 2) {
+      const [x, y] = split.map(p => p.trim());
+      return {
+        x: parseInt(x),
+        y: parseInt(y)
+      };
+    }
+    return { x: 0, y: 0 };
+  }
+
+  private getStart() {
+    const { x, y } = this.getViewportPosition();
+    return `${x} ${y}`;
   }
 
   private getMusic() {
@@ -23,7 +34,7 @@ export class RootNode extends Node {
   private addEventPrelude($: Compiler) {
     if (this.meta.entry) {
       const buffer = $.getBuffer();
-      buffer.unshift(this.getMusic(), this.getViewportStart()!);
+      buffer.unshift(this.getMusic(), this.getStart());
     }
   }
 
@@ -34,6 +45,7 @@ export class RootNode extends Node {
   }
 
   public compile($: Compiler, state: State) {
+    state.viewport = this.getViewportPosition();
     $.useScope(this.meta.title, () => {
       this.addEventPause();
       for (const node of this.children) {

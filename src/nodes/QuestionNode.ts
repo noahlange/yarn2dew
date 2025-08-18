@@ -50,11 +50,11 @@ export class QuestionNode {
 
     for (const response of this.responses) {
       if (response.id) {
-        $.writeLine(`switchEvent "${$.namespace}.${response.id}"`);
+        $.write(`switchEvent "${$.namespace}.${response.id}"`);
       } else {
         $.writeLine('pause 1');
       }
-      $.write(' (break)');
+      $.write('(break)');
     }
 
     for (const r of this.responses) {

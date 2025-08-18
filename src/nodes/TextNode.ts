@@ -39,8 +39,7 @@ export class TextNode extends Node {
       const { value, next: returnIndex } = this.parse(parser, next, nodes);
       // inline consecutive dialogue nodes from the same speaker
       if (value instanceof TextNode && speaker && value.speaker === speaker) {
-        // add a break to the most recently-added chunk, then add the chunks from the next node.
-        chunks.splice(chunks.length - 1, 1, `${text} #$b$# `, ...value.chunks);
+        chunks.push(...value.chunks);
         return {
           next: returnIndex,
           value: new TextNode(chunks, speaker)
@@ -64,7 +63,7 @@ export class TextNode extends Node {
   public compile($: Compiler) {
     if (this.speaker) {
       $.writeLine(`speak ${this.speaker} "`);
-      $.write(this.chunks.map(chunk => this.getI18nKey($, chunk)).join(' '));
+      $.write(this.getI18nKey($, this.chunks.join(' #$b# ')));
       $.write('"');
     } else {
       for (const chunk of this.chunks) {

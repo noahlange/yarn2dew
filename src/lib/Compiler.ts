@@ -41,6 +41,9 @@ export class Compiler {
   }
 
   public useScope(name: string, cb: () => void, type = ScopeType.EVENT) {
+    if (this.scope.type !== ScopeType.NONE) {
+      this.scope.content = this.buffer.slice();
+    }
     this.buffer = [];
     this.stack.push(this.getNewScope(type, name));
     cb();
