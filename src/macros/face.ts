@@ -9,7 +9,7 @@ function fn(
 ) {
   const [a, b] = [state.position[npc1], state.position[npc2]];
   const deg = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI + 180;
-  const direction = Math.floor((deg + 45) / 90) % 4;
+  const direction = (Math.floor((deg + 45) / 90) - 1) % 4;
   state.position[npc1].d = direction;
   $.writeLine(
     toContinue == null
@@ -23,7 +23,7 @@ const ysls = {
   Parameters: [
     { Name: 'npc1', Type: 'string' },
     { Name: 'npc2', Type: 'string' },
-    { Name: 'continue', Type: 'boolean', DefaultValue: false }
+    { Name: 'continue', Type: 'boolean', DefaultValue: 'false' }
   ]
 };
 
