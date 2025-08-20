@@ -14,11 +14,8 @@ function parse(x: string, y: string, d: string) {
 
 function fn($: Compiler, state: State, name: string, x: string, y: string, d: string) {
   const args = parse(x, y, d);
-  const buffer = $.getBuffer();
-  const prev = buffer[0] ?? '';
-  const pos = (state.position[name] ??= args);
-  Object.assign(pos, args);
-  buffer[0] = prev + `${name} ${args.x} ${args.y} ${args.d} `;
+  const pos = Object.assign((state.position[name] ??= args), args);
+  $.declare(`start ${name}`, `${name} ${pos.x} ${pos.y} ${pos.d}`);
 }
 
 const ysls = {
