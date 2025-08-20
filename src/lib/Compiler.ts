@@ -10,10 +10,15 @@ export enum ScopeType {
   EVENT
 }
 
+export interface Declaration {
+  key: string;
+  value: string;
+}
+
 export interface Scope {
   id: number;
   type: ScopeType;
-  reqs: Record<string, string>;
+  decls: Declaration[];
   name: string | null;
   content: string[];
   count: number;
@@ -27,7 +32,7 @@ export class Compiler {
   }
 
   public getBuilder(filename?: string): Builder {
-    return new Builder(Object.values(this.frames), this.i18n, {
+    return new Builder(Object.values(this.frames), this.config.i18n, {
       namespace: this.doc.meta.override ? '' : this.namespace,
       target: this.doc.meta.target,
       filename
@@ -36,7 +41,7 @@ export class Compiler {
 
   private getNewScope(type: ScopeType, name: string | null = null): number {
     const id = ++this.scopeID;
-    this.frames[id] = { id, type, name, content: [], reqs: {}, count: 0 };
+    this.frames[id] = { id, type, name, content: [], decls: [], count: 0 };
     return id;
   }
 
@@ -67,12 +72,13 @@ export class Compiler {
    * Given text, add an i18n entry and return its identifier.
    */
   public getI18nKey(text: string): string {
-    const key = this.getID();
-    this.i18n[key] = `${text}`;
+    const i18n = this.config.i18n;
+    let key = Object.keys(i18n).find(k => i18n[k] === text);
+    if (!key) key = this.getID();
+    i18n[key] = text;
     return `i18n:${this.namespace}.${key}`;
   }
 
-  private i18n: Record<string, string> = {};
   private scopeID: number = 0;
   private frames: Record<number, Scope> = {};
   private stack: number[] = [];
@@ -102,8 +108,8 @@ export class Compiler {
     this.buffer.push(text);
   }
 
-  public addRequirement(key: string, value: string) {
-    this.scope.reqs[key] = value;
+  public declare(key: string, value: string) {
+    this.scope.decls.push({ key, value });
   }
 
   public compile() {
@@ -119,8 +125,8 @@ export class Compiler {
     private doc: DocumentNode
   ) {
     this.state = {} as State;
-    this.stack = [this.getNewScope(ScopeType.NONE)];
     this.buffer = [];
+    this.stack = [this.getNewScope(ScopeType.NONE)];
     const fns = [Object.values(this.config.macros), Object.values(this.config.commands)].flat();
     for (const fn of fns) {
       if (!fn.getInitialState) continue;

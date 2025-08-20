@@ -5,6 +5,7 @@ import { type AnyNode, CommandNode, type DocumentMeta } from '.';
 
 export class RootNode extends Node {
   private getViewportPosition() {
+    if (!this.meta.start) return { x: 0, y: 0 };
     let split = this.meta.start.split(',');
     if (split.length <= 1) {
       split = this.meta.start.split(' ');
@@ -19,22 +20,33 @@ export class RootNode extends Node {
     return { x: 0, y: 0 };
   }
 
+  private getFarmerStart() {
+    return `farmer ${this.getStart()} 2`;
+  }
+
   private getStart() {
     const { x, y } = this.getViewportPosition();
     return `${x} ${y}`;
   }
 
-  private getMusic() {
-    if (this.meta.music) {
-      return this.meta.music;
-    }
-    return 'continue';
-  }
-
   private addEventPrelude($: Compiler) {
+    const farmerStart = $.scope.decls.findLast(({ key }) => key == 'start farmer');
+    if (!farmerStart) {
+      $.declare('start farmer', this.getFarmerStart());
+    }
+
     if (this.meta.entry) {
       const buffer = $.getBuffer();
-      buffer.unshift(this.getMusic(), this.getStart());
+      const music = $.scope.decls.findLast(d => d.key === 'music')?.value ?? this.meta.music;
+
+      buffer.unshift(
+        music ?? 'continue',
+        this.getStart(),
+        $.scope.decls
+          .filter(d => d.key.startsWith('start '))
+          .map(d => d.value)
+          .join(' ')
+      );
     }
   }
 
@@ -45,7 +57,13 @@ export class RootNode extends Node {
   }
 
   public compile($: Compiler, state: State) {
-    state.viewport = this.getViewportPosition();
+    if (this.meta.music) $.declare('music', this.meta.music);
+    if (this.meta.entry && this.meta.start) {
+      state.viewport = this.getViewportPosition();
+      state.position['farmer'] = { ...state.viewport, d: 2 };
+      $.declare('start farmer', this.getFarmerStart());
+    }
+
     $.useScope(this.meta.title, () => {
       this.addEventPause();
       for (const node of this.children) {

@@ -4,9 +4,9 @@ The compiler API is a lil' slapdash. It's essentially a wrapper over an array of
 
 Most important things to note:
 
-1.  Every node has a `compile()` function that accepts two parameters, the compiler instance (conventionally, `$`) and state, which is discarded after compilation.
+1.  Every node has a `compile()` function that accepts two parameters, the compiler instance (conventionally, `$`) and state, which is tracked during but discarded after compilation.
 2.  Commands and macros are simply function versions of these, taking an array of string arguments as parameters instead of requiring you to futz with the AST.
-3.  The compiler has 4 commonly-used public methods and 3 others of incidental importance.
+3.  The compiler has 4 commonly-used public methods and 3 others of lesser importance.
 
 | Method                                                      | Description                                               |
 | :---------------------------------------------------------- | --------------------------------------------------------- |
@@ -15,8 +15,12 @@ Most important things to note:
 | `$.getID(): string`                                         | Return a new sequential identifier for the given scope.   |
 | `$.getI18nKey(text: string): string`                        | Return a unique i18n key for the given text.              |
 | `$.getBuffer(): string[]`                                   | Returns underlying text array.                            |
-| `$.addRequirement(key: string, value: string)`              | Add a key-value pair to the list of event requirements.   |
+| `$.declare(key: string, value: string)`                     | Add a key-value pair to the list of event declarations.   |
 | `$.addScope(type: ScopeType, name: string, cb: () => void)` | Create a new compiler scope with the given type and name. |
+
+## Declarations
+
+Event requirements, start positions and starting music are all _declarations_. It's essentially an array of key-value pairs that gets flattened into a dictionary. Keys that begin with `start ` indicate NPC positions. `music` indicates the music.
 
 ## Macros & Commands
 

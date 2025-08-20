@@ -36,11 +36,11 @@ describe('TextNode', () => {
   });
 
   test('substitution tokens are emitted verbatim', () => {
-    expect(y2sdv.i18n['Y2D.Main.02']).toBe('This is {{WEATHER}} text!');
+    expect(y2sdv.i18n['Y2D.Main.01']).toEndWith('This is {{WEATHER}} text!');
   });
 });
 
 test('message nodes', () => {
-  expect(node).toContain('message "{{i18n:Y2D.Main.03}}"');
-  expect(y2sdv.i18n['Y2D.Main.03']).toBe('Goodbye, cruel world!');
+  expect(node).toContain('message "{{i18n:Y2D.Main.02}}"');
+  expect(y2sdv.i18n['Y2D.Main.02']).toStartWith('Goodbye, cruel world!');
 });

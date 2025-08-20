@@ -40,12 +40,13 @@ export class Builder {
   }
 
   private getEventKey(content: Scope) {
-    const prereq = Object.entries(content.reqs)
-      .map(([k, v]) => `${k} ${v}`)
+    const reqs = content.decls
+      .filter(({ key }) => key !== 'music' && !key.startsWith('start'))
+      .map(({ key, value }) => `${key} ${value}`)
       .join('/');
 
-    return prereq
-      ? `${this.options.namespace}.${content.name}/${prereq}`
+    return reqs
+      ? `${this.options.namespace}.${content.name}/${reqs}`
       : `${this.options.namespace}.${content.name}`;
   }
 

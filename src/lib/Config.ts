@@ -67,6 +67,8 @@ export class Config {
     return this.data.commands;
   }
 
+  public i18n: Record<string, string> = {};
+
   public constructor(
     private data: Y2DConfig,
     private ysls: YSLSData = { Commands: [], Functions: [] }
