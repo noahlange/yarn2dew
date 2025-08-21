@@ -44,3 +44,20 @@ export function toScreamingSnakeCase(str: string) {
     .join('_')
     .toUpperCase();
 }
+
+export function parseCoordinateArgs(
+  x: string | number,
+  y: string | number,
+  d: string | number,
+  toContinue?: string | boolean
+) {
+  const res = { x: +x, y: +y, d: +d, toContinue: toContinue == 'true' };
+  if (isFinite(res.x) && isFinite(res.y) && isFinite(res.d)) {
+    if (res.d < 0 || res.d > 4) {
+      throw new Error(`direction is not between 0–3 (inclusive).`);
+    }
+    return res;
+  } else {
+    throw new Error(`invalid numeric args (${x}, ${y}, ${d})`);
+  }
+}

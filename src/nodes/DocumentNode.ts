@@ -24,7 +24,6 @@ export class DocumentNode extends Node {
   ) {
     super();
     if (!meta.target) {
-      console.log(meta);
       throw new Error('entry node must have a "target" field.');
     }
   }

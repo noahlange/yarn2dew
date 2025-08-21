@@ -440,18 +440,6 @@ const commands: YSLSCommand[] = [
     Parameters: [{ Name: 'amount', Type: 'number' }]
   },
   {
-    YarnName: 'move',
-    Documentation:
-      "Make a named NPC move by the given tile offset from their current position (along one axis only), and face the given direction when they're done. ",
-    Parameters: [
-      { Name: 'actor', Type: 'string' },
-      { Name: 'x', Type: 'number' },
-      { Name: 'y', Type: 'number' },
-      { Name: 'd', Type: 'number' },
-      { Name: 'continue', Type: 'boolean', DefaultValue: 'false' }
-    ]
-  },
-  {
     YarnName: 'pause',
     Language: 'text',
     Documentation: 'Pause for `duration` ms before continuing.',
@@ -643,12 +631,7 @@ const commands: YSLSCommand[] = [
   },
   {
     YarnName: 'warp',
-    Parameters: [
-      { Name: 'actor', Type: 'string' },
-      { Name: 'x', Type: 'number' },
-      { Name: 'y', Type: 'number' },
-      { Name: 'continue', Type: 'bool', DefaultValue: 'false' }
-    ]
+    Parameters: []
   },
   {
     YarnName: 'when',

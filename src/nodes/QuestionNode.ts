@@ -51,8 +51,6 @@ export class QuestionNode {
     for (const response of this.responses) {
       if (response.id) {
         $.write(`switchEvent "${$.namespace}.${response.id}"`);
-      } else {
-        $.writeLine('pause 1');
       }
       $.write('(break)');
     }

@@ -1,1 +1,2 @@
-export type { Compiler, State } from './lib';
+export { Compiler, Parser, Config } from './lib';
+export type { State } from './types';
