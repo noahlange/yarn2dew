@@ -10,6 +10,7 @@ export interface Y2DConfig {
   directory: string;
   macros: Record<string, Macro>;
   commands: Record<string, Macro>;
+  i18n: boolean;
 }
 
 export class Config {
@@ -17,7 +18,13 @@ export class Config {
    * Returns a basic test config.
    */
   public static get test() {
-    return new Config({ directory: process.cwd(), namespace: 'Y2D', macros, commands });
+    return new Config({
+      directory: process.cwd(),
+      namespace: 'Y2D',
+      macros,
+      commands,
+      i18n: true
+    });
   }
 
   public static async load(directory: string = process.cwd()): Promise<Config> {
@@ -65,6 +72,10 @@ export class Config {
 
   public get commands() {
     return this.data.commands;
+  }
+
+  public get i18nEnabled() {
+    return this.data.i18n !== false;
   }
 
   public i18n: Record<string, string> = {};

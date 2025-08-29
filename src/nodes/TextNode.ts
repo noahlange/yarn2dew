@@ -20,7 +20,7 @@ export class TextNode extends Node {
     const chunks: string[] = [];
 
     if (next instanceof yarn.DialogShortcutNode) {
-      return QuestionNode.parse(parser, node, nodes);
+      return QuestionNode.parse(parser, next, nodes);
     } else {
       while (next && 'lineNum' in next && next.lineNum === node.lineNum) {
         nextIndex += 1;
@@ -57,7 +57,9 @@ export class TextNode extends Node {
   private getI18nKey($: Compiler, text: string) {
     // don't i18nify commands
     if (text.startsWith('#')) return text;
-    return `{{${text.startsWith('i18n:') ? text : $.getI18nKey(text)}}}`;
+    if (text.startsWith('i18n:')) return `{{${text}}}`;
+    const i18n = $.getI18nKey(text);
+    return i18n.startsWith('i18n:') ? `{{${i18n}}}` : text;
   }
 
   public compile($: Compiler) {

@@ -1,4 +1,4 @@
-import { type AnyNode, CommandNode, JumpNode } from '.';
+import { type AnyNode, JumpNode } from '.';
 import { Compiler, type State } from '../lib';
 
 export class ResponseNode {
@@ -8,7 +8,9 @@ export class ResponseNode {
   }
 
   public compile($: Compiler, state: State) {
-    if (!this.id) throw new Error('Cannot compile response node without destination ID');
+    if (!this.id) {
+      throw new Error('Cannot compile response node without destination ID');
+    }
     $.useScope(this.id, () => {
       for (const node of this.content) {
         node.compile($, state);
@@ -23,7 +25,7 @@ export class ResponseNode {
     public text: string,
     public content: AnyNode[]
   ) {
-    this.content.unshift(new CommandNode('pause', ['1']));
+    console.log({ text, content });
     const trimmed = text.trim();
     if (trimmed.startsWith('i18n:')) {
       this.i18n = trimmed;

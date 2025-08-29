@@ -72,6 +72,7 @@ export class Compiler {
    * Given text, add an i18n entry and return its identifier.
    */
   public getI18nKey(text: string): string {
+    if (!this.config.i18nEnabled) return text;
     const i18n = this.config.i18n;
     let key = Object.keys(i18n).find(k => i18n[k] === text);
     if (!key) key = this.getID();

@@ -30,6 +30,7 @@ export class Parser {
         .with(P.instanceOf(nodes.JumpCommandNode), n => $.JumpNode.parse(this, n, ns))
         .with(P.instanceOf(nodes.StopCommandNode), n => $.CommandNode.parse(this, n, ns))
         .with(P.instanceOf(nodes.GenericCommandNode), n => $.CommandNode.parse(this, n, ns))
+        .with(P.instanceOf(nodes.DialogShortcutNode), n => $.QuestionNode.parse(this, n, ns))
         .otherwise(node => {
           throw new Error(
             `Unsupported node type ${'type' in node ? node.type : '???'} at line ${this.getLine(node)}`

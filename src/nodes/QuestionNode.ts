@@ -8,51 +8,69 @@ type DialogShortcutNode = InstanceType<typeof yarn.DialogShortcutNode>;
 export class QuestionNode {
   public static parse(
     parser: Parser,
-    node: InstanceType<typeof yarn.TextNode>,
+    node: InstanceType<typeof yarn.DialogShortcutNode>,
     nodes: NodeType[]
   ): ParseResult<QuestionNode> {
-    // consume until we hit the last dialog shortcut
-    const [name, text] = node.text.split(': ');
-    const trimmed = text?.trim();
-    const nodeText = text ? trimmed : name;
-    let index = nodes.indexOf(node);
+    let next = nodes.indexOf(node);
+    // lookback to see if there's dialogue
+    const prev = nodes[next - 1];
+    let nodeText: string | null = null;
+
+    if (prev instanceof yarn.TextNode) {
+      // consume until we hit the last dialog shortcut
+      const [name, text] = prev.text.split(': ');
+      const trimmed = text?.trim();
+      nodeText = text ? trimmed : name;
+    }
 
     const options: ResponseNode[] = [];
 
-    while (nodes[index + 1] instanceof yarn.DialogShortcutNode) {
-      const { content, text } = nodes[index + 1] as DialogShortcutNode;
-      const response = new ResponseNode(stringifyTextNode(text), parser.process(content ?? []));
+    while (nodes[next] instanceof yarn.DialogShortcutNode) {
+      const { content, text } = nodes[next] as DialogShortcutNode;
+
+      const response = new ResponseNode(
+        stringifyTextNode(text),
+        parser.process(content ?? [], false)
+      );
       options.push(response);
-      index++;
+      next++;
     }
 
-    return { next: index + 1, value: new QuestionNode(nodeText, options) };
+    return {
+      next,
+      value: new QuestionNode(options, nodeText)
+    };
   }
 
   public compile($: Compiler, state: State) {
-    const i18n = (this.i18n ??= $.getI18nKey(this.text));
+    if (this.text) {
+      const i18n = (this.i18n ??= $.getI18nKey(this.text));
+      if (i18n.startsWith('i18n:')) {
+        $.write(`/pause 1/quickQuestion {{${i18n}}}#`);
+      } else {
+        $.write(`/pause 1/quickQuestion ${i18n}#`);
+      }
+    } else {
+      $.write('/pause 1/quickQuestion #');
+    }
 
     // needed in order to get i18n keys
     for (const r of this.responses) r.precompile($);
 
-    const quick = false;
-
-    $.write(quick ? `/question null {{${i18n}}}#` : `/quickQuestion {{${i18n}}}#`);
-
     $.write(
       `${this.responses
         .filter(r => r instanceof ResponseNode)
-        .map(r => `{{${r.i18n}}}`)
+        .map(r => (r.i18n?.startsWith('i18n') ? `{{${r.i18n}}}` : r.i18n))
         .join('#')}`
     );
 
-    $.write('(break)');
-
     for (const response of this.responses) {
+      $.write('(break)');
       if (response.id) {
         $.write(`switchEvent "${$.namespace}.${response.id}"`);
+      } else {
+        $.write('pause 1');
       }
-      $.write('(break)');
     }
 
     for (const r of this.responses) {
@@ -63,14 +81,16 @@ export class QuestionNode {
   public i18n: string | null = null;
 
   constructor(
-    public text: string,
-    public responses: ResponseNode[]
+    public responses: ResponseNode[],
+    public text: string | null = null
   ) {
-    const trimmed = text.trim();
-    if (trimmed.startsWith('i18n:')) {
-      this.i18n = trimmed;
-    } else {
-      this.text = trimmed;
+    if (text) {
+      const trimmed = text.trim();
+      if (trimmed.startsWith('i18n:')) {
+        this.i18n = trimmed;
+      } else {
+        this.text = trimmed;
+      }
     }
   }
 }
